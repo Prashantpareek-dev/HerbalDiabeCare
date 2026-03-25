@@ -1,2050 +1,3107 @@
 <!DOCTYPE html>
 <html lang="gu">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DiabCare – બ્લડ શૂગર મેનેજમેન્ટ</title>
-<link href="https://fonts.googleapis.com/css2?family=Halant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --black: #0a0a0a;
-    --deep: #111611;
-    --green: #1a7a2e;
-    --green-bright: #22a83d;
-    --green-light: #2ecc5a;
-    --green-pale: #c8f5d4;
-    --white: #ffffff;
-    --off-white: #f4faf5;
-    --gray: #e8f5eb;
-    --font: 'Halant', serif;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: var(--font);
-    background: #f0f5f0;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-  }
-
-  .page {
-    width: 100%;
-    max-width: 450px;
-    background: var(--black);
-    overflow: hidden;
-    position: relative;
-  }
-
-  /* ===== TICKER ===== */
-  .ticker {
-    background: var(--green-bright);
-    color: var(--white);
-    font-size: 13px;
-    font-weight: 600;
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 8px 0;
-  }
-  .ticker-inner {
-    display: inline-block;
-    animation: ticker 20s linear infinite;
-  }
-  .ticker-inner span { margin: 0 30px; }
-  @keyframes ticker {
-    0% { transform: translateX(100vw); }
-    100% { transform: translateX(-100%); }
-  }
-
-  /* ===== HOOK SECTION ===== */
-  .hook {
-    background: var(--black);
-    position: relative;
-    overflow: hidden;
-    padding: 0;
-  }
-
-  .hook-bg-pattern {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34,168,61,0.18) 0%, transparent 70%),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(34,168,61,0.07) 40px);
-    pointer-events: none;
-  }
-
-  .hook-top {
-    position: relative;
-    z-index: 2;
-    padding: 28px 24px 0;
-    text-align: center;
-  }
-
-  .brand-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(34,168,61,0.15);
-    border: 1px solid var(--green-bright);
-    border-radius: 100px;
-    padding: 6px 18px;
-    margin-bottom: 20px;
-  }
-  .brand-badge .dot {
-    width: 8px; height: 8px;
-    background: var(--green-bright);
-    border-radius: 50%;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(1.3); }
-  }
-  .brand-badge span {
-    color: var(--green-bright);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .hook-headline {
-    font-size: 34px;
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.15;
-    margin-bottom: 10px;
-  }
-  .hook-headline .accent {
-    color: var(--green-bright);
-    display: block;
-  }
-
-  .hook-sub {
-    font-size: 18px;
-    color: rgba(255,255,255,0.75);
-    font-weight: 400;
-    line-height: 1.5;
-    margin-bottom: 24px;
-    padding: 0 8px;
-  }
-
-  /* Product hero image - diagonal clip */
-  .hook-product-wrap {
-    position: relative;
-    margin: 0 -1px;
-  }
-  .hook-product-img {
-    width: 100%;
-    height: 320px;
-    object-fit: contain;
-    display: block;
-    background: linear-gradient(180deg, #0a0a0a 0%, #0d1a0f 40%, #0a0a0a 100%);
-    padding: 10px 40px 0;
-    position: relative;
-    z-index: 2;
-  }
-  .hook-product-glow {
-    position: absolute;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 200px; height: 60px;
-    background: radial-gradient(ellipse, rgba(34,168,61,0.5), transparent 70%);
-    border-radius: 50%;
-    z-index: 1;
-  }
-
-  .hook-cta-band {
-    background: var(--green);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    position: relative;
-    z-index: 3;
-  }
-  .hook-cta-band .tag {
-    font-size: 14px;
-    color: var(--white);
-    font-weight: 500;
-    line-height: 1.4;
-  }
-  .hook-cta-band .tag strong {
-    display: block;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  .btn-main {
-    background: var(--white);
-    color: var(--green);
-    font-family: var(--font);
-    font-size: 16px;
-    font-weight: 700;
-    border: none;
-    border-radius: 100px;
-    padding: 12px 22px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.25s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .btn-main:hover { background: var(--green-pale); transform: scale(1.04); }
-
-  /* ===== PAIN SECTION ===== */
-  .pain-section {
-    background: var(--off-white);
-    padding: 40px 0 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .section-eyebrow {
-    text-align: center;
-    padding: 0 24px;
-    margin-bottom: 28px;
-  }
-  .eyebrow-tag {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 8px;
-  }
-  .section-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--black);
-    line-height: 1.2;
-  }
-  .section-title .line2 { color: var(--green); }
-
-  /* Pain items - zigzag with images */
-  .pain-items { padding: 0 0 10px; }
-
-  .pain-item {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 160px;
-    position: relative;
-    overflow: hidden;
-  }
-  .pain-item:nth-child(even) { direction: rtl; }
-  .pain-item:nth-child(even) .pain-text { direction: ltr; }
-
-  .pain-img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    display: block;
-    filter: brightness(0.85);
-  }
-
-  .pain-text {
-    background: var(--black);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 20px 18px;
-    position: relative;
-  }
-  .pain-item:nth-child(even) .pain-text { background: var(--deep); }
-
-  .pain-icon {
-    font-size: 26px;
-    margin-bottom: 8px;
-    display: block;
-  }
-  .pain-text p {
-    color: var(--white);
-    font-size: 17px;
-    font-weight: 500;
-    line-height: 1.4;
-  }
-  .pain-text .pain-sub {
-    color: rgba(255,255,255,0.5);
-    font-size: 13px;
-    font-weight: 400;
-    margin-top: 4px;
-  }
-
-  .pain-bottom-card {
-    margin: 12px 20px 0;
-    background: var(--green);
-    border-radius: 16px 16px 0 0;
-    padding: 20px 22px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .pain-bottom-card .arrow-icon {
-    font-size: 28px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    width: 46px; height: 46px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .pain-bottom-card p {
-    color: var(--white);
-    font-size: 17px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  /* ===== PRODUCT INTRO ===== */
-  .intro-section {
-    background: var(--black);
-    padding: 44px 24px 40px;
-    position: relative;
-    overflow: hidden;
-  }
-  .intro-bg {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 100%, rgba(34,168,61,0.15) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .intro-section .section-title { color: var(--white); text-align: center; margin-bottom: 22px; }
-  .intro-section .section-title .line2 { color: var(--green-light); }
-
-  .intro-product-showcase {
-    position: relative;
-    text-align: center;
-    margin-bottom: 28px;
-  }
-  .intro-product-showcase img {
-    width: 200px;
-    height: 220px;
-    object-fit: contain;
-    position: relative;
-    z-index: 2;
-    filter: drop-shadow(0 0 30px rgba(34,168,61,0.4));
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  .intro-product-showcase::before {
-    content: '';
-    position: absolute;
-    bottom: 10px; left: 50%;
-    transform: translateX(-50%);
-    width: 160px; height: 30px;
-    background: radial-gradient(ellipse, rgba(34,168,61,0.4), transparent 70%);
-    border-radius: 50%;
-    z-index: 1;
-  }
-
-  .intro-desc {
-    color: rgba(255,255,255,0.8);
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 1.6;
-    text-align: center;
-    border-left: 3px solid var(--green-bright);
-    padding-left: 16px;
-    text-align: left;
-  }
-
-  /* ===== HOW IT WORKS ===== */
-  .hiw-section {
-    background: var(--off-white);
-    padding: 44px 0 0;
-    overflow: hidden;
-  }
-  .hiw-section .section-eyebrow { margin-bottom: 0; }
-
-  .hiw-cards {
-    margin-top: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .hiw-card {
-    display: grid;
-    grid-template-columns: 130px 1fr;
-    background: var(--white);
-    border-bottom: 1px solid var(--gray);
-    overflow: hidden;
-    transition: all 0.3s;
-    cursor: default;
-  }
-  .hiw-card:nth-child(even) { grid-template-columns: 1fr 130px; }
-  .hiw-card:hover { background: var(--green-pale); }
-
-  .hiw-card-img {
-    width: 130px;
-    height: 130px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s;
-  }
-  .hiw-card:nth-child(even) .hiw-card-img { order: 2; }
-  .hiw-card:hover .hiw-card-img { transform: scale(1.06); }
-
-  .hiw-card-body {
-    padding: 20px 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .hiw-card:nth-child(even) .hiw-card-body { order: 1; }
-
-  .hiw-num {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--green);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .hiw-card-body h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--black);
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-  .hiw-card-body p {
-    font-size: 14px;
-    color: #444;
-    font-weight: 400;
-    line-height: 1.5;
-  }
-
-  .hiw-result-bar {
-    background: var(--green);
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .hiw-result-bar span {
-    font-size: 22px;
-  }
-  .hiw-result-bar p {
-    color: var(--white);
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  /* ===== BEFORE AFTER ===== */
-  .ba-section {
-    background: var(--black);
-    padding: 44px 0 0;
-    overflow: hidden;
-  }
-  .ba-section .section-eyebrow { padding: 0 24px; }
-  .ba-section .section-title { color: var(--white); text-align: center; }
-  .ba-section .section-title .line2 { color: var(--green-light); }
-
-  .ba-wrapper {
-    margin-top: 28px;
-    position: relative;
-  }
-
-  .ba-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .ba-col {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .ba-col-header {
-    padding: 12px 16px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-align: center;
-  }
-  .ba-col.before .ba-col-header { background: #1a0505; color: #ff6b6b; }
-  .ba-col.after .ba-col-header { background: #001a05; color: var(--green-light); }
-
-  .ba-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    display: block;
-  }
-  .ba-col.before .ba-img { filter: grayscale(40%) brightness(0.8); }
-  .ba-col.after .ba-img { filter: saturate(1.2) brightness(1.05); }
-
-  .ba-label {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.35;
-  }
-  .ba-col.before .ba-label { background: linear-gradient(transparent, rgba(200,30,30,0.85)); }
-  .ba-col.after .ba-label { background: linear-gradient(transparent, rgba(26,122,46,0.9)); }
-
-  .ba-divider {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3px;
-    background: var(--white);
-    z-index: 10;
-    pointer-events: none;
-  }
-  .ba-divider::after {
-    content: '⟷';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--white);
-    color: var(--black);
-    font-size: 14px;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 900;
-  }
-
-  .ba-points {
-    background: var(--deep);
-    padding: 20px 24px;
-  }
-  .ba-point {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .ba-point:last-child { border-bottom: none; }
-  .ba-point-icon {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-  .ba-point-icon.bad { background: rgba(255,80,80,0.15); }
-  .ba-point-icon.good { background: rgba(34,168,61,0.15); }
-  .ba-point-text {
-    font-size: 15px;
-    color: rgba(255,255,255,0.8);
-    font-weight: 400;
-  }
-  .ba-point-text strong {
-    display: block;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--white);
-  }
-
-  /* ===== INGREDIENTS ===== */
-  .ing-section {
-    background: var(--off-white);
-    padding: 44px 0 0;
-    overflow: hidden;
-  }
-  .ing-section .section-eyebrow { padding: 0 24px; }
-
-  .ing-grid {
-    margin-top: 24px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
-
-  .ing-card {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .ing-card:nth-child(1) { clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%); }
-  .ing-card:nth-child(2) { clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%); }
-  .ing-card:nth-child(3) { clip-path: polygon(0 0, 95% 0, 100% 100%, 0 100%); }
-  .ing-card:nth-child(4) { clip-path: polygon(0 0, 100% 0, 100% 100%, 5% 100%); }
-
-  .ing-img {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s;
-  }
-  .ing-card:hover .ing-img { transform: scale(1.1); }
-
-  .ing-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(transparent 30%, rgba(10,10,10,0.85) 100%);
-    transition: background 0.3s;
-  }
-  .ing-card:hover .ing-overlay { background: linear-gradient(transparent 10%, rgba(26,122,46,0.9) 100%); }
-
-  .ing-info {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 14px;
-  }
-  .ing-name {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--white);
-    display: block;
-    margin-bottom: 4px;
-  }
-  .ing-desc {
-    font-size: 13px;
-    color: rgba(255,255,255,0.75);
-    font-weight: 400;
-    display: none;
-    line-height: 1.4;
-  }
-  .ing-card:hover .ing-desc { display: block; }
-
-  .ing-note {
-    margin: 8px 20px 0;
-    background: var(--green);
-    border-radius: 12px 12px 0 0;
-    padding: 16px 20px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .ing-note span { font-size: 22px; }
-  .ing-note p { color: var(--white); font-size: 16px; font-weight: 600; }
-
-  /* ===== RECOMMENDATION ===== */
-  .rec-section {
-    background: var(--black);
-    padding: 44px 24px 40px;
-    overflow: hidden;
-    position: relative;
-  }
-  .rec-bg {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 20% 50%, rgba(34,168,61,0.1) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .rec-section .section-title { color: var(--white); text-align: center; margin-bottom: 28px; }
-  .rec-section .section-title .line2 { color: var(--green-light); }
-
-  .rec-comparison {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-  .rec-col {
-    border-radius: 14px;
-    overflow: hidden;
-  }
-  .rec-col-head {
-    padding: 14px 16px;
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-  }
-  .rec-col.old .rec-col-head { background: #1a0505; color: #ff6b6b; }
-  .rec-col.new .rec-col-head { background: var(--green); color: var(--white); }
-
-  .rec-col-img {
-    width: 100%;
-    height: 110px;
-    object-fit: cover;
-    display: block;
-  }
-  .rec-col.old .rec-col-img { filter: grayscale(60%); }
-
-  .rec-col-items { background: rgba(255,255,255,0.06); }
-  .rec-col-item {
-    padding: 10px 14px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.75);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    display: flex; align-items: center; gap: 8px;
-    font-weight: 400;
-  }
-  .rec-col-item .dot-r { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .rec-col.old .dot-r { background: #ff6b6b; }
-  .rec-col.new .dot-r { background: var(--green-light); }
-
-  .rec-row {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 16px;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 18px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 14px;
-    border: 1px solid rgba(34,168,61,0.2);
-    transition: all 0.3s;
-    cursor: default;
-  }
-  .rec-row:hover { border-color: var(--green-bright); background: rgba(34,168,61,0.08); }
-  .rec-row img {
-    width: 100px; height: 90px;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-  .rec-row-text h4 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 5px;
-  }
-  .rec-row-text p {
-    font-size: 14px;
-    color: rgba(255,255,255,0.6);
-    font-weight: 400;
-    line-height: 1.5;
-  }
-
-  /* ===== HOW TO USE ===== */
-  .use-section {
-    background: var(--off-white);
-    padding: 44px 0 0;
-    overflow: hidden;
-  }
-  .use-section .section-eyebrow { padding: 0 24px; }
-
-  .use-steps {
-    margin-top: 24px;
-    position: relative;
-  }
-  .use-steps::before {
-    content: '';
-    position: absolute;
-    left: 60px; top: 0; bottom: 0;
-    width: 2px;
-    background: linear-gradient(var(--green), transparent);
-  }
-
-  .use-step {
-    display: grid;
-    grid-template-columns: 120px 1fr;
-    min-height: 120px;
-    overflow: hidden;
-    border-bottom: 1px solid var(--gray);
-    transition: all 0.3s;
-    cursor: default;
-  }
-  .use-step:hover { background: var(--green-pale); }
-
-  .use-step-img {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s;
-  }
-  .use-step:hover .use-step-img { transform: scale(1.08); }
-
-  .use-step-body {
-    padding: 18px 16px;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-  .use-step-num {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--green);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .use-step-body h3 {
-    font-size: 19px;
-    font-weight: 700;
-    color: var(--black);
-    margin-bottom: 4px;
-  }
-  .use-step-body p {
-    font-size: 14px;
-    color: #555;
-    font-weight: 400;
-    line-height: 1.5;
-  }
-
-  /* ===== CERTIFICATIONS ===== */
-  .cert-section {
-    background: var(--black);
-    padding: 40px 24px;
-  }
-  .cert-section .section-title { color: var(--white); text-align: center; margin-bottom: 24px; }
-  .cert-section .section-title .line2 { color: var(--green-light); }
-
-  .cert-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .cert-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(34,168,61,0.25);
-    border-radius: 14px;
-    padding: 18px 14px;
-    text-align: center;
-    transition: all 0.3s;
-    cursor: default;
-    overflow: hidden;
-    position: relative;
-  }
-  .cert-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(34,168,61,0.1), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .cert-card:hover { border-color: var(--green-bright); transform: translateY(-3px); }
-  .cert-card:hover::before { opacity: 1; }
-
-  .cert-img {
-    width: 100%;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    filter: grayscale(30%);
-    transition: filter 0.3s;
-  }
-  .cert-card:hover .cert-img { filter: grayscale(0%); }
-  .cert-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--green-light);
-    display: block;
-    margin-bottom: 4px;
-  }
-  .cert-desc {
-    font-size: 12px;
-    color: rgba(255,255,255,0.5);
-    font-weight: 400;
-  }
-
-  /* ===== OFFER ===== */
-  .offer-section {
-    background: var(--green);
-    padding: 0;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .offer-top {
-    padding: 36px 24px 28px;
-    text-align: center;
-    position: relative;
-  }
-  .offer-top::before {
-    content: '';
-    position: absolute;
-    top: -20px; left: 50%;
-    transform: translateX(-50%);
-    width: 150px; height: 150px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 50%;
-  }
-
-  .offer-badge {
-    display: inline-block;
-    background: var(--white);
-    color: var(--green);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    border-radius: 100px;
-    margin-bottom: 16px;
-  }
-  .offer-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.15;
-    margin-bottom: 10px;
-  }
-  .offer-sub {
-    font-size: 17px;
-    color: rgba(255,255,255,0.85);
-    font-weight: 400;
-    margin-bottom: 0;
-  }
-
-  .offer-benefits {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .offer-benefit {
-    display: grid;
-    grid-template-columns: 90px 1fr;
-    background: rgba(255,255,255,0.08);
-    border-top: 1px solid rgba(255,255,255,0.12);
-    overflow: hidden;
-    transition: background 0.3s;
-    cursor: default;
-  }
-  .offer-benefit:hover { background: rgba(255,255,255,0.15); }
-  .offer-benefit:nth-child(even) { grid-template-columns: 1fr 90px; }
-
-  .offer-benefit-img {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    display: block;
-  }
-  .offer-benefit:nth-child(even) .offer-benefit-img { order: 2; }
-
-  .offer-benefit-text {
-    padding: 16px 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .offer-benefit:nth-child(even) .offer-benefit-text { order: 1; }
-  .offer-benefit-text strong {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--white);
-    display: block;
-    margin-bottom: 3px;
-  }
-  .offer-benefit-text span {
-    font-size: 14px;
-    color: rgba(255,255,255,0.75);
-    font-weight: 400;
-  }
-
-  .offer-cta {
-    padding: 28px 24px;
-    background: var(--black);
-    text-align: center;
-  }
-  .btn-cta-big {
-    display: block;
-    width: 100%;
-    background: var(--green-bright);
-    color: var(--white);
-    font-family: var(--font);
-    font-size: 22px;
-    font-weight: 700;
-    border: none;
-    border-radius: 14px;
-    padding: 18px 24px;
-    cursor: pointer;
-    transition: all 0.25s;
-    text-decoration: none;
-    animation: ctaPulse 2s ease-in-out infinite;
-  }
-  @keyframes ctaPulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(34,168,61,0.5); }
-    50% { box-shadow: 0 0 0 12px rgba(34,168,61,0); }
-  }
-  .btn-cta-big:hover { background: var(--green); transform: scale(1.02); }
-  .btn-cta-big .cta-sub {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    opacity: 0.85;
-    margin-top: 3px;
-  }
-
-  /* ===== REVIEWS ===== */
-  .review-section {
-    background: var(--off-white);
-    padding: 44px 0 0;
-    overflow: hidden;
-  }
-  .review-section .section-eyebrow { padding: 0 24px; }
-
-  .review-cards { margin-top: 24px; }
-
-  .review-card {
-    padding: 22px 24px;
-    border-bottom: 1px solid var(--gray);
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 16px;
-    align-items: start;
-    transition: background 0.3s;
-    cursor: default;
-  }
-  .review-card:hover { background: var(--green-pale); }
-  .review-card:nth-child(even) { background: var(--white); }
-  .review-card:nth-child(even):hover { background: var(--green-pale); }
-
-  .review-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--green);
-    display: block;
-  }
-
-  .review-body {}
-  .review-stars { color: #f0c040; font-size: 16px; margin-bottom: 6px; letter-spacing: 2px; }
-  .review-name {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--black);
-    margin-bottom: 6px;
-  }
-  .review-text {
-    font-size: 15px;
-    color: #333;
-    font-weight: 400;
-    line-height: 1.55;
-    font-style: italic;
-  }
-  .review-meta {
-    font-size: 12px;
-    color: var(--green);
-    font-weight: 600;
-    margin-top: 6px;
-    display: block;
-  }
-
-  .review-note {
-    padding: 14px 24px 0;
-    font-size: 12px;
-    color: #888;
-    text-align: center;
-    font-style: italic;
-  }
-
-  /* ===== ORDER FORM ===== */
-  .order-section {
-    background: var(--black);
-    padding: 44px 24px 40px;
-  }
-  .order-section .section-title { color: var(--white); text-align: center; margin-bottom: 24px; }
-  .order-section .section-title .line2 { color: var(--green-light); }
-
-  .order-form {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(34,168,61,0.25);
-    border-radius: 20px;
-    padding: 28px 22px;
-  }
-
-  .form-group {
-    margin-bottom: 18px;
-  }
-  .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--green-light);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-family: var(--font);
-    font-size: 17px;
-    color: var(--white);
-    outline: none;
-    transition: all 0.25s;
-    -webkit-appearance: none;
-  }
-  .form-group input::placeholder,
-  .form-group textarea::placeholder { color: rgba(255,255,255,0.3); }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    border-color: var(--green-bright);
-    background: rgba(34,168,61,0.08);
-    box-shadow: 0 0 0 3px rgba(34,168,61,0.15);
-  }
-  .form-group select option { background: #111; color: var(--white); }
-  .form-group textarea { resize: none; height: 90px; }
-
-  .order-submit-btn {
-    width: 100%;
-    background: var(--green-bright);
-    color: var(--white);
-    font-family: var(--font);
-    font-size: 21px;
-    font-weight: 700;
-    border: none;
-    border-radius: 12px;
-    padding: 17px 24px;
-    cursor: pointer;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-  }
-  .order-submit-btn:hover { background: var(--green); }
-  .order-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-
-  .loading-bar {
-    display: none;
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 4px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 0 0 12px 12px;
-    overflow: hidden;
-  }
-  .loading-bar.active { display: block; }
-  .loading-bar::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -50%;
-    width: 50%;
-    height: 100%;
-    background: var(--white);
-    animation: loadSlide 1s linear infinite;
-  }
-  @keyframes loadSlide {
-    0% { left: -50%; }
-    100% { left: 100%; }
-  }
-
-  .order-trust {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 18px;
-    flex-wrap: wrap;
-  }
-  .trust-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.6);
-    font-weight: 500;
-  }
-  .trust-item .dot { color: var(--green-bright); font-size: 16px; }
-
-  /* ===== FAQ ===== */
-  .faq-section {
-    background: var(--off-white);
-    padding: 44px 24px 40px;
-  }
-  .faq-section .section-title { text-align: center; margin-bottom: 24px; }
-
-  .faq-item {
-    border-bottom: 1px solid var(--gray);
-    overflow: hidden;
-  }
-  .faq-q {
-    padding: 18px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    gap: 12px;
-    transition: color 0.2s;
-  }
-  .faq-q:hover { color: var(--green); }
-  .faq-q-text {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--black);
-    flex: 1;
-    line-height: 1.35;
-  }
-  .faq-q:hover .faq-q-text { color: var(--green); }
-  .faq-icon {
-    width: 30px; height: 30px;
-    background: var(--green);
-    color: var(--white);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
-    flex-shrink: 0;
-    transition: transform 0.3s;
-  }
-  .faq-item.open .faq-icon { transform: rotate(45deg); }
-
-  .faq-a {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-  }
-  .faq-item.open .faq-a { max-height: 200px; }
-  .faq-a-inner {
-    padding: 0 0 18px;
-    font-size: 16px;
-    color: #555;
-    font-weight: 400;
-    line-height: 1.6;
-    border-left: 3px solid var(--green);
-    padding-left: 14px;
-  }
-
-  /* ===== DISCLAIMER ===== */
-  .disclaimer-section {
-    background: #0d0d0d;
-    padding: 30px 24px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-  }
-  .disclaimer-title {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 10px;
-  }
-  .disclaimer-text {
-    font-size: 13px;
-    color: rgba(255,255,255,0.35);
-    font-weight: 400;
-    line-height: 1.7;
-  }
-
-  /* ===== STICKY CTA ===== */
-  .sticky-cta {
-    position: fixed;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 450px;
-    background: var(--black);
-    border-top: 2px solid var(--green);
-    padding: 14px 20px;
-    z-index: 999;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
-  }
-  .sticky-cta-text {
-    flex: 1;
-  }
-  .sticky-cta-text strong {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--white);
-    display: block;
-  }
-  .sticky-cta-text span {
-    font-size: 13px;
-    color: var(--green-light);
-    font-weight: 500;
-  }
-  .sticky-cta-btn {
-    background: var(--green-bright);
-    color: var(--white);
-    font-family: var(--font);
-    font-size: 16px;
-    font-weight: 700;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 20px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-    text-decoration: none;
-  }
-  .sticky-cta-btn:hover { background: var(--green); }
-
-  /* ===== SUCCESS MODAL ===== */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal-box {
-    background: var(--black);
-    border: 2px solid var(--green-bright);
-    border-radius: 20px;
-    padding: 40px 30px;
-    text-align: center;
-    max-width: 380px;
-    width: 100%;
-    animation: modalIn 0.4s ease;
-  }
-  @keyframes modalIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  .modal-icon { font-size: 60px; margin-bottom: 16px; display: block; }
-  .modal-title { font-size: 28px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
-  .modal-text { font-size: 16px; color: rgba(255,255,255,0.7); font-weight: 400; line-height: 1.6; }
-  .modal-close {
-    margin-top: 24px;
-    background: var(--green-bright);
-    color: var(--white);
-    font-family: var(--font);
-    font-size: 17px;
-    font-weight: 700;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 32px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .modal-close:hover { background: var(--green); }
-
-  /* Smooth scroll padding for sticky bar */
-  .order-section { scroll-margin-top: 0; }
-
-  @media (max-width: 480px) {
-    .hook-headline { font-size: 28px; }
-    .hook-sub { font-size: 16px; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>DiabCare – બ્લડ શૂગર મેનેજમેન્ટ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Halant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --deep: #0d160f;
+      --green: #1a7a2e;
+      --gb: #22a83d;
+      --gl: #2ecc5a;
+      --gp: #c8f5d4;
+      --white: #fff;
+      --ow: #f4faf5;
+      --gray: #e0f0e4;
+      --font: 'Halant', serif;
+      --pad-x: clamp(16px, 5vw, 40px);
+      --content-max: 1180px;
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      margin: 0;
+      padding: 20px 90px;
+      overflow-x: hidden;
+      width: 100%
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px
+      }
+      
+    }
+
+    /* TICKER */
+    .ticker {
+      background: var(--gb);
+      color: #fff;
+      font-size: clamp(12px, 3.5vw, 15px);
+      font-weight: 700;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 9px 0;
+      position: sticky;
+      top: 0;
+      z-index: 200
+    }
+
+    .ticker-inner {
+      display: inline-block;
+      animation: tick 24s linear infinite
+    }
+
+    .ticker-inner span {
+      margin: 0 28px
+    }
+
+    @keyframes tick {
+      from {
+        transform: translateX(100vw)
+      }
+
+      to {
+        transform: translateX(-100%)
+      }
+    }
+
+    /* SHARED */
+    section {
+      width: 100%;
+      display: block
+    }
+
+    .eyebrow {
+      font-size: clamp(10px, 2.8vw, 13px);
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gb);
+      display: block;
+      margin-bottom: 8px
+    }
+
+    .sec-title {
+      font-size: clamp(24px, 6.5vw, 42px);
+      font-weight: 700;
+      line-height: 1.12
+    }
+
+    .acc {
+      color: var(--gl)
+    }
+
+    .sec-sub {
+      font-size: clamp(15px, 3.8vw, 19px);
+      color: rgba(255, 255, 255, .65);
+      font-weight: 400;
+      line-height: 1.55
+    }
+
+    /* HOOK */
+    .hook {
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    
+      display: flex;
+      flex-direction: column
+    }
+
+    .hook-noise {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(34, 168, 61, .2), transparent 65%), repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(34, 168, 61, .05) 50px);
+      pointer-events: none
+    }
+
+    .hook-inner {
+      position: relative;
+      z-index: 2;
+      padding: clamp(26px, 6vw, 52px) var(--pad-x) 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: var(--content-max);
+      margin-inline: auto;
+      width: 100%
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 168, 61, .14);
+      border: 1px solid var(--gb);
+      border-radius: 100px;
+      padding: 7px 18px;
+      margin-bottom: 22px;
+      width: fit-content
+    }
+
+    .brand-pill .live {
+      width: 9px;
+      height: 9px;
+      background: var(--gb);
+      border-radius: 50%;
+      animation: blink 1.4s ease-in-out infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .3;
+        transform: scale(1.4)
+      }
+    }
+
+    .brand-pill span {
+      color: var(--gb);
+      font-size: clamp(11px, 3vw, 14px);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase
+    }
+
+    .hook-h1 {
+      font-size: clamp(28px, 8.5vw, 56px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.08;
+      margin-bottom: 14px
+    }
+
+    .hook-h1 .acc {
+      color: var(--gb);
+      display: block
+    }
+
+    .hook-sub {
+      font-size: clamp(15px, 4vw, 20px);
+      color: rgba(255, 255, 255, .72);
+      font-weight: 400;
+      line-height: 1.55;
+      margin-bottom: 28px
+    }
+
+    .hook-product {
+      position: relative;
+      text-align: center;
+      padding: 0 0 0;
+      min-height: clamp(220px, 55vw, 340px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center
+    }
+
+    .hook-product img {
+      width: min(260px, 60vw);
+      object-fit: contain;
+      position: relative;
+      z-index: 2;
+      animation: fl 3.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 40px rgba(34, 168, 61, .45))
+    }
+
+    @keyframes fl {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-12px)
+      }
+    }
+
+    .hook-glow {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(200px, 50vw);
+      height: 44px;
+      background: radial-gradient(ellipse, rgba(34, 168, 61, .55), transparent 70%);
+      border-radius: 50%
+    }
+
+    .hook-cta-bar {
+      background: var(--green);
+      padding: 18px var(--pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      position: relative;
+      z-index: 3;
+      flex-shrink: 0
+    }
+
+    .hook-cta-bar .info strong {
+      font-size: clamp(15px, 4.5vw, 22px);
+      color: #fff;
+      display: block;
+      font-weight: 700
+    }
+
+    .hook-cta-bar .info span {
+      font-size: clamp(12px, 3vw, 15px);
+      color: rgba(255, 255, 255, .8)
+    }
+
+    .btn-now {
+      background: #fff;
+      color: var(--green);
+      font-family: var(--font);
+      font-size: clamp(14px, 3.8vw, 18px);
+      font-weight: 700;
+      border: none;
+      border-radius: 100px;
+      padding: 13px clamp(18px, 5vw, 28px);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: .25s;
+      text-decoration: none;
+      display: inline-block
+    }
+
+    .btn-now:hover {
+      background: var(--gp);
+      transform: scale(1.04)
+    }
+
+    /* PAIN */
+    .pain-sec {
+      background: var(--ow);
+      overflow: hidden
+    }
+
+    .pain-head {
+      padding: clamp(40px, 8vw, 60px) var(--pad-x) 0;
+      margin-bottom: clamp(22px, 5vw, 34px)
+    }
+
+    .pain-head .sec-title {
+      color: var(--black)
+    }
+
+    .pain-head .sec-title .acc {
+      color: var(--green)
+    }
+
+    .pain-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: clamp(130px, 35vw, 420px);
+      overflow: hidden;
+      border-bottom: 2px solid rgba(0, 0, 0, .04)
+    }
+
+    .pain-row:nth-child(even) {
+      direction: rtl
+    }
+
+    .pain-row:nth-child(even)>* {
+      direction: ltr
+    }
+
+    .pain-img {
+      width: 100%;
+      height: clamp(130px, 35vw, 420px);
+      object-fit: cover;
+      display: block;
+      filter: brightness(.88)
+    }
+
+    .pain-text {
+      background: var(--black);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(14px, 4vw, 24px)
+    }
+
+    .pain-row:nth-child(even) .pain-text {
+      background: var(--deep)
+    }
+
+    .pain-icon-lg {
+      font-size: clamp(20px, 5.5vw, 30px);
+      margin-bottom: 7px
+    }
+
+    .pain-text p {
+      color: #fff;
+      font-size: clamp(14px, 4vw, 20px);
+      font-weight: 600;
+      line-height: 1.35
+    }
+
+    .pain-text small {
+      color: rgba(255, 255, 255, .43);
+      font-size: clamp(11px, 2.8vw, 14px);
+      font-weight: 400;
+      margin-top: 4px;
+      display: block
+    }
+
+    .pain-footer {
+      background: var(--green);
+      padding: clamp(16px, 4.5vw, 24px) var(--pad-x);
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .pain-footer .ico {
+      font-size: clamp(22px, 5.5vw, 30px);
+      background: rgba(255, 255, 255, .2);
+      border-radius: 50%;
+      width: clamp(40px, 10vw, 52px);
+      height: clamp(40px, 10vw, 52px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .pain-footer p {
+      color: #fff;
+      font-size: clamp(14px, 4vw, 20px);
+      font-weight: 600;
+      line-height: 1.4
+    }
+
+    /* INTRO */
+    .intro-sec {
+      background: var(--black);
+      padding: clamp(48px, 8vw, 70px) var(--pad-x);
+      position: relative;
+      overflow: hidden;
+      text-align: center
+    }
+
+    .intro-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 100%, rgba(34, 168, 61, .18), transparent 60%);
+      pointer-events: none
+    }
+
+    .intro-sec .sec-title {
+      color: #fff;
+      margin-bottom: 18px
+    }
+
+    .intro-product {
+      position: relative;
+      display: inline-block;
+      margin: clamp(20px, 5vw, 34px) auto
+    }
+
+    .intro-product img {
+      width: min(590px, 88vw);
+      object-fit: cover;
+      position: relative;
+      border-radius: 25%;
+      z-index: 2;
+      filter: drop-shadow(0 0 34px rgba(34, 168, 61, .5));
+      animation: fl 3s ease-in-out infinite
+    }
+
+    .intro-product::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(150px, 38vw);
+      height: 32px;
+      background: radial-gradient(ellipse, rgba(34, 168, 61, .45), transparent 70%);
+      border-radius: 50%
+    }
+
+    .intro-desc {
+      color: rgba(255, 255, 255, .8);
+      font-size: clamp(15px, 4vw, 19px);
+      font-weight: 400;
+      line-height: 1.65;
+      border-left: 3px solid var(--gb);
+      padding-left: 16px;
+      text-align: left;
+      max-width: 720px;
+      margin: 0 auto
+    }
+
+    /* HOW IT WORKS */
+    .hiw-sec {
+      background: var(--ow);
+      overflow: hidden
+    }
+
+    .hiw-head {
+      padding: clamp(40px, 8vw, 60px) var(--pad-x) 0;
+      margin-bottom: 0
+    }
+
+    .hiw-head .sec-title {
+      color: var(--black)
+    }
+
+    .hiw-head .sec-title .acc {
+      color: var(--green)
+    }
+
+    .hiw-cards {
+      margin-top: clamp(20px, 5vw, 30px)
+    }
+
+    .hiw-card {
+      display: grid;
+      grid-template-columns: clamp(100px, 26vw, 220px) 1fr;
+      border-bottom: 1px solid var(--gray);
+      overflow: hidden;
+      transition: .3s;
+      cursor: default
+    }
+
+    .hiw-card:nth-child(even) {
+      grid-template-columns: 1fr clamp(100px, 26vw, 220px)
+    }
+
+    .hiw-card:hover {
+      background: var(--gp)
+    }
+
+    .hiw-card-img {
+      width: clamp(100px, 26vw, 220px);
+      height: clamp(100px, 26vw, 220px);
+      object-fit: contain;
+      display: block;
+      transition: transform .4s
+    }
+
+    .hiw-card:nth-child(even) .hiw-card-img {
+      order: 2
+    }
+
+    .hiw-card:hover .hiw-card-img {
+      transform: scale(1.07)
+    }
+
+    .hiw-body {
+      padding: clamp(14px, 4vw, 22px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .hiw-card:nth-child(even) .hiw-body {
+      order: 1
+    }
+
+    .hiw-num {
+      font-size: clamp(9px, 2.5vw, 12px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 5px
+    }
+
+    .hiw-body h3 {
+      font-size: clamp(17px, 4.5vw, 23px);
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 5px
+    }
+
+    .hiw-body p {
+      font-size: clamp(12px, 3.2vw, 15px);
+      color: #444;
+      line-height: 1.5
+    }
+
+    .hiw-result {
+      background: var(--green);
+      padding: clamp(14px, 4vw, 20px) var(--pad-x);
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .hiw-result span {
+      font-size: clamp(20px, 5vw, 28px)
+    }
+
+    .hiw-result p {
+      color: #fff;
+      font-size: clamp(15px, 4vw, 21px);
+      font-weight: 700
+    }
+
+    /* BEFORE AFTER */
+    .ba-sec {
+      background: var(--black);
+      overflow: hidden
+    }
+
+    .ba-head {
+      padding: clamp(40px, 8vw, 60px) var(--pad-x) 0
+    }
+
+    .ba-head .sec-title {
+      color: #fff
+    }
+
+    .ba-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-top: clamp(20px, 5vw, 30px)
+    }
+
+    .ba-lbl {
+      padding: clamp(10px, 2.8vw, 14px) 0;
+      font-size: clamp(12px, 3.2vw, 15px);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center
+    }
+
+    .ba-lbl.b {
+      background: #1c0505;
+      color: #ff6565
+    }
+
+    .ba-lbl.a {
+      background: #001a05;
+      color: var(--gl)
+    }
+
+    .ba-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      border-top: 1px solid rgba(255, 255, 255, .07)
+    }
+
+    .ba-col {
+      overflow: hidden;
+      position: relative
+    }
+
+    .ba-col img {
+      width: 100%;
+      height: clamp(150px, 40vw, 380px);
+      object-fit: cover;
+      object-position: center top;
+      display: block
+    }
+
+    .ba-col.b img {
+      filter: grayscale(45%) brightness(.78)
+    }
+
+    .ba-col.a img {
+      filter: saturate(1.25) brightness(1.05)
+    }
+
+    .ba-cap {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: clamp(8px, 2.5vw, 12px);
+      font-size: clamp(11px, 3vw, 14px);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.3
+    }
+
+    .ba-col.b .ba-cap {
+      background: linear-gradient(transparent, rgba(200, 30, 30, .82))
+    }
+
+    .ba-col.a .ba-cap {
+      background: linear-gradient(transparent, rgba(26, 122, 46, .88))
+    }
+
+    .ba-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      background: #fff;
+      z-index: 10;
+      pointer-events: none
+    }
+
+    .ba-divider::after {
+      content: '⟷';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      color: var(--black);
+      font-size: 12px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900
+    }
+
+    .ba-points {
+      background: var(--deep);
+      padding: clamp(18px, 5vw, 28px) var(--pad-x)
+    }
+
+    .ba-pt {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .ba-pt:last-child {
+      border: none
+    }
+
+    .ba-pt-icon {
+      width: clamp(32px, 8vw, 40px);
+      height: clamp(32px, 8vw, 40px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(14px, 3.5vw, 18px);
+      flex-shrink: 0;
+      margin-top: 2px
+    }
+
+    .ba-pt-icon.bad {
+      background: rgba(255, 80, 80, .15)
+    }
+
+    .ba-pt-icon.good {
+      background: rgba(34, 168, 61, .15)
+    }
+
+    .ba-pt-text strong {
+      display: block;
+      font-size: clamp(14px, 3.8vw, 18px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px
+    }
+
+    .ba-pt-text p {
+      font-size: clamp(12px, 3.2vw, 15px);
+      color: rgba(255, 255, 255, .6);
+      font-weight: 400;
+      line-height: 1.45
+    }
+
+    /* INGREDIENTS */
+    .ing-sec {
+      background: var(--ow);
+      overflow: hidden
+    }
+
+    .ing-head {
+      padding: clamp(40px, 8vw, 60px) var(--pad-x) 0
+    }
+
+    .ing-head .sec-title {
+      color: var(--black)
+    }
+
+    .ing-head .sec-title .acc {
+      color: var(--green)
+    }
+
+    .ing-grid {
+      margin-top: clamp(18px, 4.5vw, 28px);
+      display: grid;
+      grid-template-columns: 1fr 1fr
+    }
+
+    .ing-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer
+    }
+
+    .ing-card:nth-child(1) {
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%)
+    }
+
+    .ing-card:nth-child(2) {
+      clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%)
+    }
+
+    .ing-card:nth-child(3) {
+      clip-path: polygon(0 0, 95% 0, 100% 100%, 0 100%)
+    }
+
+    .ing-card:nth-child(4) {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 5% 100%)
+    }
+
+    .ing-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform .5s
+    }
+
+    .ing-card:hover .ing-img {
+      transform: scale(1.1)
+    }
+
+    .ing-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 28%, rgba(10, 10, 10, .88) 100%);
+      transition: .3s
+    }
+
+    .ing-card:hover .ing-overlay {
+      background: linear-gradient(transparent 8%, rgba(26, 122, 46, .92) 100%)
+    }
+
+    .ing-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px
+    }
+
+    .ing-name {
+      font-size: clamp(17px, 4.5vw, 23px);
+      font-weight: 700;
+      color: #fff;
+      display: block;
+      margin-bottom: 3px
+    }
+
+    .ing-hint {
+      font-size: clamp(11px, 2.8vw, 13px);
+      color: rgba(255, 255, 255, .78);
+      line-height: 1.4;
+      display: none
+    }
+
+    .ing-card:hover .ing-hint {
+      display: block
+    }
+
+    .ing-footer {
+      background: var(--green);
+      padding: clamp(14px, 4vw, 20px) var(--pad-x);
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .ing-footer span {
+      font-size: clamp(20px, 5vw, 26px)
+    }
+
+    .ing-footer p {
+      color: #fff;
+      font-size: clamp(14px, 3.8vw, 18px);
+      font-weight: 600
+    }
+
+    /* RECOMMENDATION */
+    .rec-sec {
+      background: var(--black);
+      padding: clamp(48px, 8vw, 68px) var(--pad-x) clamp(44px, 8vw, 60px);
+      position: relative;
+      overflow: hidden
+    }
+
+    .rec-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(34, 168, 61, .1), transparent 60%);
+      pointer-events: none
+    }
+
+    .rec-sec .sec-title {
+      color: #fff;
+      margin-bottom: clamp(20px, 5vw, 30px)
+    }
+
+    .rec-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: clamp(20px, 5vw, 30px)
+    }
+
+    .rec-col {
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-self: stretch
+    }
+
+    .rec-col-h {
+      padding: clamp(11px, 3vw, 14px);
+      font-size: clamp(12px, 3.2vw, 15px);
+      font-weight: 700;
+      text-align: center
+    }
+
+    .rec-col.old .rec-col-h {
+      background: #1c0505;
+      color: #ff6565
+    }
+
+    .rec-col.new .rec-col-h {
+      background: var(--green);
+      color: #fff
+    }
+
+    .rec-col-img {
+      width: 100%;
+      height: clamp(140px, 35vw, 320px);
+      object-fit: contain;
+      display: block
+    }
+
+    .rec-col.old .rec-col-img {
+      filter: grayscale(55%)
+    }
+
+    .rec-col-items {
+      background: rgba(255, 255, 255, .06);
+      flex: 1
+    }
+
+    .rec-item {
+      padding: clamp(8px, 2.5vw, 11px) 14px;
+      font-size: clamp(12px, 3.2vw, 15px);
+      color: rgba(255, 255, 255, .75);
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .rdot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .rec-col.old .rdot {
+      background: #ff6565
+    }
+
+    .rec-col.new .rdot {
+      background: var(--gl)
+    }
+
+    .rec-rows-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .rec-row {
+      display: grid;
+      grid-template-columns: clamp(80px, 20vw, 110px) 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: clamp(14px, 4vw, 18px);
+      background: rgba(255, 255, 255, .05);
+      border-radius: 14px;
+      border: 1px solid rgba(34, 168, 61, .18);
+      transition: .3s;
+      cursor: default
+    }
+
+    .rec-row:hover {
+      border-color: var(--gb);
+      background: rgba(34, 168, 61, .08)
+    }
+
+    .rec-row img {
+      width: clamp(110px, 28vw, 150px);
+      height: clamp(110px, 28vw, 150px);
+      object-fit: contain;
+      border-radius: 10px
+    }
+
+    @media (min-width: 768px) {
+      .rec-rows-wrap {
+        flex-direction: row;
+        align-items: stretch
+      }
+
+      .rec-row {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center
+      }
+
+      .rec-row img {
+        width: 100%;
+        height: clamp(160px, 18vw, 220px);
+        object-fit: contain;
+        margin-bottom: 8px
+      }
+    }
+
+    .rec-row h4 {
+      font-size: clamp(15px, 4vw, 20px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 5px
+    }
+
+    .rec-row p {
+      font-size: clamp(12px, 3.2vw, 15px);
+      color: rgba(255, 255, 255, .6);
+      line-height: 1.5
+    }
+
+    /* HOW TO USE */
+    .use-sec {
+      background: var(--ow);
+      overflow: hidden
+    }
+
+    .use-head {
+      padding: clamp(40px, 8vw, 60px) var(--pad-x) 0
+    }
+
+    .use-head .sec-title {
+      color: var(--black)
+    }
+
+    .use-head .sec-title .acc {
+      color: var(--green)
+    }
+
+    .use-steps {
+      margin-top: clamp(18px, 4.5vw, 26px);
+      display: flex;
+      flex-direction: column
+    }
+
+    .use-step {
+      display: grid;
+      grid-template-columns: clamp(100px, 26vw, 145px) 1fr;
+      border-bottom: 1px solid var(--gray);
+      overflow: hidden;
+      transition: .3s;
+      cursor: default
+    }
+
+    .use-step:hover {
+      background: var(--gp)
+    }
+
+    .use-step-img {
+      width: clamp(100px, 26vw, 145px);
+      height: clamp(100px, 26vw, 145px);
+      object-fit: cover;
+      display: block;
+      transition: transform .4s
+    }
+
+    .use-step:hover .use-step-img {
+      transform: scale(1.08)
+    }
+
+    .use-body {
+      padding: clamp(14px, 4vw, 20px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    @media (min-width: 768px) {
+      .use-steps {
+        flex-direction: row;
+        align-items: stretch
+      }
+
+      .use-step {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        border-bottom: none;
+        border-right: 1px solid var(--gray)
+      }
+
+      .use-step:last-child {
+        border-right: none
+      }
+
+      .use-step-img {
+        width: 100%;
+        height: clamp(160px, 20vw, 240px)
+      }
+
+      .use-body {
+        flex: 1
+      }
+    }
+
+    .use-num {
+      font-size: clamp(9px, 2.5vw, 12px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 5px
+    }
+
+    .use-body h3 {
+      font-size: clamp(17px, 4.5vw, 22px);
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 4px
+    }
+
+    .use-body p {
+      font-size: clamp(12px, 3.2vw, 15px);
+      color: #555;
+      line-height: 1.5
+    }
+
+    /* CERTIFICATIONS */
+    .cert-sec {
+      background: var(--black);
+      padding: clamp(48px, 8vw, 68px) var(--pad-x) clamp(44px, 8vw, 60px)
+    }
+
+    .cert-sec .sec-title {
+      color: #fff;
+      margin-bottom: clamp(18px, 5vw, 26px)
+    }
+
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(10px, 3vw, 16px)
+    }
+
+    @media (min-width: 600px) {
+      .cert-grid {
+        grid-template-columns: repeat(4, 1fr)
+      }
+    }
+
+    .cert-card {
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(34, 168, 61, .22);
+      border-radius: 14px;
+      overflow: hidden;
+      text-align: center;
+      transition: .3s;
+      cursor: default;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center
+    }
+
+    .cert-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(34, 168, 61, .12), transparent);
+      opacity: 0;
+      transition: .3s
+    }
+
+    .cert-card:hover {
+      border-color: var(--gb);
+      transform: translateY(-3px)
+    }
+
+    .cert-card:hover::before {
+      opacity: 1
+    }
+
+    .cert-img {
+      width: 100%;
+      height: auto;
+      max-height: clamp(100px, 25vw, 160px);
+      object-fit: contain;
+      padding: clamp(12px, 3vw, 20px);
+      display: block;
+      filter: grayscale(20%);
+      transition: filter .3s
+    }
+
+    .cert-card:hover .cert-img {
+      filter: none
+    }
+
+    .cert-info {
+      padding: clamp(10px, 2.8vw, 14px)
+    }
+
+    .cert-name {
+      font-size: clamp(13px, 3.5vw, 17px);
+      font-weight: 700;
+      color: var(--gl);
+      display: block;
+      margin-bottom: 3px
+    }
+
+    .cert-desc {
+      font-size: clamp(10px, 2.8vw, 13px);
+      color: rgba(255, 255, 255, .45)
+    }
+
+    /* OFFER */
+    .offer-sec {
+      background: var(--green);
+      overflow: hidden
+    }
+
+    .offer-top {
+      padding: clamp(36px, 8vw, 56px) var(--pad-x) clamp(24px, 6vw, 36px);
+      text-align: center;
+      position: relative
+    }
+
+    .offer-top::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 180px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 50%
+    }
+
+    .offer-badge {
+      display: inline-block;
+      background: #fff;
+      color: var(--green);
+      font-size: clamp(11px, 3vw, 13px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 7px 18px;
+      border-radius: 100px;
+      margin-bottom: 16px
+    }
+
+    .offer-title {
+      font-size: clamp(24px, 7vw, 44px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.12;
+      margin-bottom: 10px
+    }
+
+    .offer-sub {
+      font-size: clamp(14px, 3.8vw, 19px);
+      color: rgba(255, 255, 255, .88)
+    }
+
+    .offer-row {
+      display: grid;
+      grid-template-columns: clamp(90px, 28vw, 130px) 1fr;
+      border-top: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .07);
+      transition: .3s;
+      cursor: default
+    }
+
+    .offer-row:hover {
+      background: rgba(255, 255, 255, .16)
+    }
+
+    .offer-row:nth-child(even) {
+      grid-template-columns: 1fr clamp(90px, 28vw, 130px)
+    }
+
+    .offer-row-img {
+      width: 100%;
+      height: clamp(90px, 22vw, 130px);
+      object-fit: cover;
+      display: block
+    }
+
+    .offer-row:nth-child(even) .offer-row-img {
+      order: 2
+    }
+
+    .offer-row-text {
+      padding: clamp(13px, 3.5vw, 17px) clamp(14px, 4vw, 20px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .offer-row:nth-child(even) .offer-row-text {
+      order: 1
+    }
+
+    .offer-row-text strong {
+      font-size: clamp(16px, 4.5vw, 22px);
+      font-weight: 700;
+      color: #fff;
+      display: block;
+      margin-bottom: 3px
+    }
+
+    .offer-row-text span {
+      font-size: clamp(12px, 3.2vw, 15px);
+      color: rgba(255, 255, 255, .75)
+    }
+
+    .offer-cta {
+      padding: clamp(24px, 6vw, 36px) var(--pad-x);
+      background: var(--black);
+      text-align: center
+    }
+
+    .btn-big {
+      display: block;
+      width: 100%;
+      background: var(--gb);
+      color: #fff;
+      font-family: var(--font);
+      font-size: clamp(18px, 5vw, 26px);
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      padding: clamp(16px, 4.5vw, 22px) 24px;
+      cursor: pointer;
+      transition: .25s;
+      text-decoration: none;
+      animation: ctaglow 2s ease-in-out infinite
+    }
+
+    @keyframes ctaglow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(34, 168, 61, .5)
+      }
+
+      50% {
+        box-shadow: 0 0 0 14px rgba(34, 168, 61, 0)
+      }
+    }
+
+    .btn-big:hover {
+      background: var(--green);
+      transform: scale(1.02)
+    }
+
+    .btn-big small {
+      display: block;
+      font-size: clamp(11px, 3vw, 14px);
+      opacity: .85;
+      margin-top: 3px
+    }
+
+    /* ====== INSTAGRAM REELS SWIPER ====== */
+    .reels-sec {
+      background: var(--black);
+      padding: clamp(40px, 8vw, 60px) 0 0;
+      overflow: hidden
+    }
+
+    .reels-head {
+      padding: 0 var(--pad-x);
+      margin-bottom: clamp(20px, 5vw, 30px)
+    }
+
+    .reels-head .sec-title {
+      color: #fff
+    }
+
+    .reels-head .sec-sub {
+      margin-top: 8px
+    }
+
+    .reels-swiper-wrap {
+      position: relative;
+      padding: 0 var(--pad-x) clamp(40px, 8vw, 56px);
+      max-width: var(--content-max);
+      margin-inline: auto
+    }
+
+    .swiper.reels-swiper {
+      padding: 8px 0 16px;
+      overflow: visible
+    }
+
+    .swiper-slide.reel-slide {
+      width: clamp(165px, 38vw, 240px);
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: transform .45s ease, box-shadow .45s ease, opacity .35s ease;
+      aspect-ratio: 9/16;
+      background: #111;
+      flex-shrink: 0;
+      opacity: .72;
+      transform: scale(.92);
+    }
+
+    .reel-slide .reel-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px
+    }
+
+    .reel-slide iframe,
+    .reel-slide video {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      border-radius: 18px;
+      pointer-events: none;
+      object-fit: cover
+    }
+
+    .swiper-slide-active.reel-slide {
+      transform: scale(1.04) !important;
+      box-shadow: 0 0 0 3px var(--gb), 0 22px 48px rgba(34, 168, 61, .36);
+      z-index: 10;
+      opacity: 1
+    }
+
+    .swiper-slide-active.reel-slide iframe,
+    .swiper-slide-active.reel-slide video {
+      pointer-events: auto
+    }
+
+    .reel-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      border-radius: 18px;
+      transition: opacity .4s;
+      z-index: 5;
+      pointer-events: none
+    }
+
+    .swiper-slide-active.reel-slide .reel-overlay {
+      opacity: 0
+    }
+
+    .reel-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 28px 10px 10px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, .76));
+      z-index: 6;
+      border-radius: 0 0 18px 18px
+    }
+
+    .reel-user {
+      font-size: clamp(11px, 2.8vw, 13px);
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .reel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gl);
+      flex-shrink: 0
+    }
+
+    .reel-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(36px, 9vw, 46px);
+      height: clamp(36px, 9vw, 46px);
+      background: rgba(255, 255, 255, .18);
+      border: 2px solid rgba(255, 255, 255, .5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(13px, 3.5vw, 17px);
+      color: #fff;
+      z-index: 6;
+      transition: .3s;
+      backdrop-filter: blur(4px)
+    }
+
+    .swiper-slide-active.reel-slide .reel-play {
+      opacity: 1;
+      pointer-events: auto;
+      cursor: pointer
+    }
+    .swiper-slide-active.reel-slide.is-playing .reel-play {
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .reels-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: clamp(12px, 3vw, 18px) 0 0
+    }
+
+    .r-btn {
+      width: clamp(36px, 9vw, 44px);
+      height: clamp(36px, 9vw, 44px);
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .15);
+      border-radius: 50%;
+      color: #fff;
+      font-size: clamp(14px, 3.5vw, 17px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .25s
+    }
+
+    .r-btn:hover {
+      background: var(--gb);
+      border-color: var(--gb)
+    }
+
+    .r-pag {
+      display: flex;
+      gap: 6px;
+      align-items: center
+    }
+
+    .r-pag .swiper-pagination-bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .3);
+      transition: .3s;
+      opacity: 1
+    }
+
+    .r-pag .swiper-pagination-bullet-active {
+      background: var(--gb);
+      width: 20px;
+      border-radius: 4px
+    }
+
+    .ig-bar {
+      background: rgba(255, 255, 255, .05);
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding: clamp(12px, 3.5vw, 16px) var(--pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .ig-bar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gl);
+      font-size: clamp(12px, 3.5vw, 16px);
+      font-weight: 700;
+      text-decoration: none;
+      transition: .25s
+    }
+
+    .ig-bar a:hover {
+      color: #fff
+    }
+
+    .ig-follow-btn {
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff;
+      font-family: var(--font);
+      font-size: clamp(12px, 3.5vw, 15px);
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: clamp(8px, 2.5vw, 11px) clamp(14px, 4vw, 20px);
+      cursor: pointer;
+      transition: .25s
+    }
+
+    .ig-follow-btn:hover {
+      opacity: .85;
+      transform: scale(1.04)
+    }
+
+    /* ====== YOUTUBE REVIEWS ====== */
+    .yt-sec {
+      background: var(--ow);
+      padding: clamp(44px, 8vw, 64px) var(--pad-x) clamp(40px, 8vw, 56px);
+      overflow: hidden
+    }
+
+    .yt-sec .sec-title {
+      color: var(--black);
+      margin-bottom: clamp(18px, 5vw, 26px)
+    }
+
+    .yt-sec .sec-title .acc {
+      color: var(--green)
+    }
+
+    .yt-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(16px, 4vw, 22px)
+    }
+
+    .yt-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 22px rgba(0, 0, 0, .08);
+      transition: .3s;
+      border: 1px solid rgba(0, 0, 0, .05)
+    }
+
+    .yt-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, .13)
+    }
+
+    .yt-embed {
+      position: relative;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: #000
+    }
+
+    .yt-embed iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none
+    }
+
+    .yt-card-body {
+      padding: clamp(14px, 4vw, 20px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .yt-rev {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .yt-rev-img {
+      width: clamp(38px, 9vw, 46px);
+      height: clamp(38px, 9vw, 46px);
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--green)
+    }
+
+    .yt-rev-name {
+      font-size: clamp(14px, 4vw, 18px);
+      font-weight: 700;
+      color: var(--black)
+    }
+
+    .yt-rev-loc {
+      font-size: clamp(10px, 2.8vw, 13px);
+      color: #888
+    }
+
+    .yt-stars {
+      color: #f0c040;
+      font-size: clamp(13px, 3.5vw, 16px);
+      letter-spacing: 2px;
+      margin-bottom: 7px
+    }
+
+    .yt-quote {
+      font-size: clamp(13px, 3.5vw, 16px);
+      color: #333;
+      font-style: italic;
+      line-height: 1.6
+    }
+
+    .yt-verified {
+      font-size: clamp(11px, 2.8vw, 13px);
+      color: var(--green);
+      font-weight: 700;
+      margin-top: 7px;
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .yt-note {
+      font-size: clamp(11px, 2.8vw, 13px);
+      color: #999;
+      text-align: center;
+      margin-top: 16px;
+      font-style: italic
+    }
+
+    /* TEXT REVIEWS */
+    .review-sec {
+      background: var(--black);
+      overflow: hidden
+    }
+
+    .review-head {
+      padding: clamp(40px, 8vw, 60px) var(--pad-x) 0
+    }
+
+    .review-head .sec-title {
+      color: #fff
+    }
+
+    .review-cards {
+      margin-top: clamp(18px, 5vw, 26px)
+    }
+
+    .rev-card {
+      padding: clamp(16px, 4.5vw, 22px) var(--pad-x);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      display: grid;
+      grid-template-columns: clamp(60px, 15vw, 80px) 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: .3s
+    }
+
+    .rev-card:hover {
+      background: rgba(34, 168, 61, .07)
+    }
+
+    .rev-card:nth-child(even) {
+      background: rgba(255, 255, 255, .03)
+    }
+
+    .rev-card:nth-child(even):hover {
+      background: rgba(34, 168, 61, .07)
+    }
+
+    .rev-avatar {
+      width: clamp(60px, 15vw, 80px);
+      height: clamp(60px, 15vw, 80px);
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--green)
+    }
+
+    .rev-stars-t {
+      color: #f0c040;
+      font-size: clamp(13px, 3.5vw, 16px);
+      letter-spacing: 2px;
+      margin-bottom: 5px
+    }
+
+    .rev-name {
+      font-size: clamp(15px, 4vw, 19px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 5px
+    }
+
+    .rev-text {
+      font-size: clamp(13px, 3.5vw, 16px);
+      color: rgba(255, 255, 255, .72);
+      font-style: italic;
+      line-height: 1.6
+    }
+
+    .rev-badge {
+      font-size: clamp(10px, 2.8vw, 13px);
+      color: var(--gl);
+      font-weight: 700;
+      margin-top: 6px;
+      display: block
+    }
+
+    .review-note {
+      padding: clamp(12px, 3.5vw, 16px) var(--pad-x) 0;
+      font-size: clamp(11px, 2.8vw, 13px);
+      color: rgba(255, 255, 255, .35);
+      text-align: center;
+      font-style: italic
+    }
+
+    /* ====== ORDER FORM ====== */
+    .order-sec {
+      background: var(--deep);
+      padding: clamp(44px, 8vw, 64px) var(--pad-x) clamp(40px, 8vw, 56px)
+    }
+
+    .order-sec .sec-title {
+      color: #fff;
+      margin-bottom: clamp(16px, 4vw, 22px)
+    }
+
+    .order-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: clamp(18px, 4.5vw, 24px)
+    }
+
+    .opill {
+      background: rgba(34, 168, 61, .15);
+      border: 1px solid rgba(34, 168, 61, .4);
+      border-radius: 100px;
+      padding: clamp(6px, 2vw, 8px) clamp(12px, 3.5vw, 18px);
+      font-size: clamp(11px, 3vw, 14px);
+      font-weight: 700;
+      color: var(--gl);
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .once-notice {
+      background: rgba(255, 200, 0, .1);
+      border: 1px solid rgba(255, 200, 0, .32);
+      border-radius: 12px;
+      padding: clamp(11px, 3.5vw, 15px) clamp(14px, 4vw, 18px);
+      margin-bottom: clamp(18px, 4.5vw, 24px);
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .once-notice span {
+      font-size: clamp(20px, 5vw, 26px);
+      flex-shrink: 0
+    }
+
+    .once-notice p {
+      font-size: clamp(12px, 3.2vw, 15px);
+      color: rgba(255, 255, 200, .82);
+      font-weight: 500;
+      line-height: 1.4
+    }
+
+    .order-card {
+      background: #0f1f12;
+      border: 1.5px solid rgba(34, 168, 61, .32);
+      border-radius: 22px;
+      padding: clamp(20px, 5.5vw, 34px) clamp(16px, 5vw, 30px);
+      position: relative;
+      overflow: hidden
+    }
+
+    .order-card::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 130px;
+      height: 130px;
+      background: radial-gradient(circle, rgba(34, 168, 61, .22), transparent 70%);
+      pointer-events: none
+    }
+
+    .flabel {
+      display: block;
+      font-size: clamp(10px, 2.8vw, 13px);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gl);
+      margin-bottom: 8px
+    }
+
+    .fgroup {
+      margin-bottom: clamp(16px, 4.5vw, 22px);
+      position: relative
+    }
+
+    .finput {
+      width: 100%;
+      background: rgba(255, 255, 255, .07);
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 12px;
+      padding: clamp(12px, 3.5vw, 16px) clamp(14px, 4vw, 18px) clamp(12px, 3.5vw, 16px) clamp(44px, 11vw, 54px);
+      font-family: var(--font);
+      font-size: clamp(16px, 4vw, 20px);
+      color: #fff;
+      outline: none;
+      transition: .3s;
+      -webkit-appearance: none
+    }
+
+    .finput::placeholder {
+      color: rgba(255, 255, 255, .28)
+    }
+
+    .finput:focus {
+      border-color: var(--gb);
+      background: rgba(34, 168, 61, .08);
+      box-shadow: 0 0 0 4px rgba(34, 168, 61, .14)
+    }
+
+    .finput:valid:not(:placeholder-shown) {
+      border-color: rgba(34, 168, 61, .5)
+    }
+
+    .ficon {
+      position: absolute;
+      left: clamp(13px, 3.5vw, 17px);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: clamp(18px, 4.5vw, 22px);
+      pointer-events: none;
+      line-height: 1
+    }
+
+    textarea.finput {
+      resize: none;
+      height: clamp(88px, 22vw, 112px);
+      padding-top: clamp(12px, 3.5vw, 16px);
+      line-height: 1.5
+    }
+
+    textarea+.ficon {
+      top: clamp(12px, 3.5vw, 17px);
+      transform: none
+    }
+
+    .qty-label-t {
+      font-size: clamp(10px, 2.8vw, 13px);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gl);
+      margin-bottom: 12px;
+      display: block
+    }
+
+    .qty-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: clamp(18px, 4.5vw, 24px)
+    }
+
+    .qty-btn {
+      background: rgba(255, 255, 255, .07);
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 12px;
+      padding: clamp(10px, 3vw, 14px) 6px;
+      font-family: var(--font);
+      font-size: clamp(12px, 3.2vw, 16px);
+      font-weight: 600;
+      color: rgba(255, 255, 255, .6);
+      cursor: pointer;
+      transition: .25s;
+      text-align: center
+    }
+
+    .qty-btn:hover {
+      border-color: var(--gb);
+      color: #fff
+    }
+
+    .qty-btn.active {
+      background: rgba(34, 168, 61, .16);
+      border-color: var(--gb);
+      color: #fff
+    }
+
+    .qty-btn .ql {
+      display: block;
+      font-size: clamp(14px, 4vw, 18px);
+      font-weight: 700;
+      margin-bottom: 3px
+    }
+
+    .qty-btn .qs {
+      display: block;
+      font-size: clamp(10px, 2.8vw, 12px);
+      color: var(--gl);
+      font-weight: 700
+    }
+
+    .submit-wrap {
+      position: relative
+    }
+
+    .order-btn {
+      width: 100%;
+      background: var(--gb);
+      color: #fff;
+      font-family: var(--font);
+      font-size: clamp(18px, 5vw, 24px);
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      padding: clamp(15px, 4.5vw, 20px) 24px;
+      cursor: pointer;
+      transition: .25s;
+      position: relative;
+      overflow: hidden;
+      animation: ctaglow 2s ease-in-out infinite
+    }
+
+    .order-btn:hover {
+      background: var(--green)
+    }
+
+    .order-btn:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      animation: none
+    }
+
+    .order-btn small {
+      display: block;
+      font-size: clamp(11px, 3vw, 14px);
+      opacity: .85;
+      margin-top: 3px
+    }
+
+    .oload {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(255, 255, 255, .25);
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+      display: none
+    }
+
+    .oload.on {
+      display: block
+    }
+
+    .oload::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 50%;
+      height: 100%;
+      background: #fff;
+      animation: lbar 1s linear infinite
+    }
+
+    @keyframes lbar {
+      0% {
+        left: -50%
+      }
+
+      100% {
+        left: 100%
+      }
+    }
+
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 16px
+    }
+
+    .trust-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: clamp(11px, 3vw, 14px);
+      color: rgba(255, 255, 255, .55);
+      font-weight: 600
+    }
+
+    .tg {
+      color: var(--gb);
+      font-size: 14px
+    }
+
+    /* FAQ */
+    .faq-sec {
+      background: var(--ow);
+      padding: clamp(44px, 8vw, 64px) var(--pad-x) clamp(40px, 8vw, 56px)
+    }
+
+    .faq-sec .sec-title {
+      color: var(--black);
+      margin-bottom: clamp(18px, 5vw, 26px)
+    }
+
+    .faq-sec .sec-title .acc {
+      color: var(--green)
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--gray)
+    }
+
+    .faq-q {
+      padding: clamp(15px, 4vw, 19px) 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      transition: .25s
+    }
+
+    .faq-qt {
+      font-size: clamp(16px, 4.5vw, 21px);
+      font-weight: 600;
+      color: var(--black);
+      flex: 1;
+      line-height: 1.35
+    }
+
+    .faq-q:hover .faq-qt {
+      color: var(--green)
+    }
+
+    .faq-ico {
+      width: clamp(28px, 7vw, 34px);
+      height: clamp(28px, 7vw, 34px);
+      background: var(--green);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(16px, 4vw, 20px);
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: transform .3s
+    }
+
+    .faq-item.open .faq-ico {
+      transform: rotate(45deg)
+    }
+
+    .faq-ans {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s ease
+    }
+
+    .faq-item.open .faq-ans {
+      max-height: 220px
+    }
+
+    .faq-ans-inner {
+      padding: 0 0 18px;
+      font-size: clamp(14px, 3.8vw, 17px);
+      color: #555;
+      line-height: 1.65;
+      border-left: 3px solid var(--green);
+      padding-left: 14px
+    }
+
+    /* DISCLAIMER */
+    .disc-sec {
+      background: #080808;
+      padding: clamp(28px, 6vw, 40px) var(--pad-x) clamp(90px, 18vw, 120px);
+      border-top: 1px solid rgba(255, 255, 255, .07)
+    }
+
+    .disc-label {
+      font-size: clamp(10px, 2.8vw, 13px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .3);
+      margin-bottom: 10px
+    }
+
+    .disc-text {
+      font-size: clamp(11px, 2.8vw, 14px);
+      color: rgba(255, 255, 255, .27);
+      line-height: 1.8
+    }
+
+    /* STICKY BAR */
+    .sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, .97);
+      border-top: 2px solid var(--green);
+      padding: clamp(10px, 3vw, 14px) clamp(14px, 4vw, 28px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, .6);
+      backdrop-filter: blur(10px)
+    }
+
+    .sticky-info {
+      flex: 1
+    }
+
+    .sticky-info strong {
+      font-size: clamp(13px, 3.8vw, 17px);
+      font-weight: 700;
+      color: #fff;
+      display: block
+    }
+
+    .sticky-info span {
+      font-size: clamp(11px, 3vw, 14px);
+      color: var(--gl);
+      font-weight: 500
+    }
+
+    .sticky-btn {
+      background: var(--gb);
+      color: #fff;
+      font-family: var(--font);
+      font-size: clamp(13px, 3.8vw, 17px);
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      padding: clamp(10px, 3vw, 13px) clamp(16px, 4.5vw, 24px);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: .2s;
+      text-decoration: none;
+      flex-shrink: 0
+    }
+
+    .sticky-btn:hover {
+      background: var(--green)
+    }
+
+    /* MODAL */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px
+    }
+
+    .modal-bg.on {
+      display: flex
+    }
+
+    .modal-box {
+      background: var(--black);
+      border: 2px solid var(--gb);
+      border-radius: 22px;
+      padding: clamp(28px, 7vw, 50px) clamp(22px, 6vw, 40px);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      animation: popin .4s ease
+    }
+
+    @keyframes popin {
+      from {
+        transform: scale(.8);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .modal-ico {
+      font-size: clamp(48px, 12vw, 70px);
+      margin-bottom: 14px;
+      display: block
+    }
+
+    .modal-title {
+      font-size: clamp(22px, 6vw, 34px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px
+    }
+
+    .modal-text {
+      font-size: clamp(13px, 3.8vw, 17px);
+      color: rgba(255, 255, 255, .7);
+      line-height: 1.65
+    }
+
+    .modal-close {
+      margin-top: 24px;
+      background: var(--gb);
+      color: #fff;
+      font-family: var(--font);
+      font-size: clamp(14px, 4vw, 18px);
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      padding: clamp(12px, 3.5vw, 16px) 36px;
+      cursor: pointer;
+      transition: .2s
+    }
+
+    .modal-close:hover {
+      background: var(--green)
+    }
+
+    @media (min-width:780px) {
+      .yt-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+
+      .reels-swiper-wrap {
+        padding-bottom: clamp(44px, 6vw, 64px)
+      }
+    }
+
+    @media (min-width:1080px) {
+      .yt-cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr))
+      }
+
+      .review-cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        padding: 0 var(--pad-x)
+      }
+
+      .rev-card {
+        padding: clamp(16px, 2.2vw, 22px);
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, .03)
+      }
+
+      .rev-card:nth-child(even) {
+        background: rgba(255, 255, 255, .05)
+      }
+    }
+
+    /* Responsive Banner */
+    .resp-banner {
+      display: block;
+      width: 100%;
+      line-height: 0
+    }
+    .resp-banner img {
+      width: 100%;
+      height: auto;
+      display: block
+    }
+    .resp-banner .banner-desktop { display: block }
+    .resp-banner .banner-mobile  { display: none  }
+    @media (max-width: 767px) {
+      .resp-banner .banner-desktop { display: none  }
+      .resp-banner .banner-mobile  { display: block }
+    }
+  </style>
 </head>
-<body>
 
-<div class="page">
+<body>
 
   <!-- TICKER -->
   <div class="ticker">
-    <div class="ticker-inner">
-      <span>🎁 FREE DELIVERY</span>
-      <span>🥗 FREE DIET CHART</span>
-      <span>💵 CASH ON DELIVERY</span>
-      <span>🔥 10% DISCOUNT TODAY</span>
-      <span>✅ GMP CERTIFIED</span>
-      <span>🌿 AYUSH APPROVED</span>
-      <span>🎁 FREE DELIVERY</span>
-      <span>🥗 FREE DIET CHART</span>
-      <span>💵 CASH ON DELIVERY</span>
-      <span>🔥 10% DISCOUNT TODAY</span>
-    </div>
+    <div class="ticker-inner"><span>🎁 FREE DELIVERY</span><span>🥗 FREE DIET CHART</span><span>💵 CASH ON
+        DELIVERY</span><span>🔥 10% DISCOUNT TODAY</span><span>✅ GMP CERTIFIED</span><span>🌿 AYUSH
+        APPROVED</span><span>⭐ TRUSTED BY THOUSANDS</span><span>🎁 FREE DELIVERY</span><span>🥗 FREE DIET
+        CHART</span><span>💵 CASH ON DELIVERY</span><span>🔥 10% DISCOUNT TODAY</span></div>
   </div>
 
-  <!-- ===== HOOK SECTION ===== -->
+  <!-- HOOK -->
   <section class="hook">
-    <div class="hook-bg-pattern"></div>
-    <div class="hook-top">
-      <div class="brand-badge">
-        <div class="dot"></div>
-        <span>DiabCare</span>
-      </div>
-      <h1 class="hook-headline">
-        રોજ શૂગર ચેક કરીને
-        <span class="accent">થાકી ગયા છો?</span>
-      </h1>
-      <p class="hook-sub">
-        હવે સરળ રૂટીન અને નેચરલ સપોર્ટ સાથે<br>
-        બ્લડ શૂગર મેનેજ કરવું <strong style="color:#fff">બની શકે સરળ.</strong>
-      </p>
+        <!-- RESPONSIVE BANNER -->
+  <div class="resp-banner">
+    <img src="./Image/Hook1.png" alt="" class="banner-desktop">
+    <img src="./Image/Hook2.png" alt="" class="banner-mobile">
+  </div>
+    <div class="hook-cta-bar">
+      <div class="info"><strong>10% OFF + FREE DELIVERY</strong><span>Limited Time Offer</span></div>
+      <a href="#order" class="btn-now">ઓર્ડર કરો</a>
     </div>
-    <div class="hook-product-wrap">
-      <img src="./Image/product.avif" alt="DiabCare Product" class="hook-product-img">
-      <div class="hook-product-glow"></div>
-    </div>
-    <div class="hook-cta-band">
-      <div class="tag">
-        <strong>10% OFF + FREE DELIVERY</strong>
-        Limited Time Offer
-      </div>
-      <a href="#order" class="btn-main">ઓર્ડર કરો</a>
-    </div>
+
+ 
   </section>
 
-  <!-- ===== PAIN SECTION ===== -->
-  <section class="pain-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag">⚠️ સમસ્યા</span>
-      <h2 class="section-title">
-        આ સમસ્યાઓ<br>
-        <span class="line2">તમને પણ છે?</span>
-      </h2>
+  <!-- PAIN -->
+  <section class="pain-sec">
+    <div class="pain-head">
+      <span class="eyebrow" style="color:var(--green)">⚠️ સમસ્યા</span>
+      <h2 class="sec-title">આ સમસ્યાઓ <span class="acc" style="color:var(--green)">તમને પણ છે?</span></h2>
     </div>
-    <div class="pain-items">
-
-      <div class="pain-item">
-        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&q=80" alt="Sugar check" class="pain-img">
-        <div class="pain-text">
-          <span class="pain-icon">📈</span>
-          <p>વારંવાર શૂગર વધી જવી</p>
-          <p class="pain-sub">Uncontrolled spikes</p>
-        </div>
+    <div class="pain-row"><img src="./Image/Pain1.png" alt=""
+        class="pain-img">
+      <div class="pain-text"><span class="pain-icon-lg">📈</span>
+        <p>વારંવાર શૂગર વધી જવી</p><small>Uncontrolled spikes</small>
       </div>
-
-      <div class="pain-item">
-        <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80" alt="Medicine" class="pain-img">
-        <div class="pain-text">
-          <span class="pain-icon">💊</span>
-          <p>દવા લીધા પછી પણ સ્ટેબલ ન થવી</p>
-          <p class="pain-sub">No stability despite meds</p>
-        </div>
-      </div>
-
-      <div class="pain-item">
-        <img src="https://images.unsplash.com/photo-1543233019-c6473ca0c1cc?w=300&q=80" alt="Fatigue" class="pain-img">
-        <div class="pain-text">
-          <span class="pain-icon">😔</span>
-          <p>થાક, ચીડિયાપણું અને કમજોરી</p>
-          <p class="pain-sub">Fatigue & irritability</p>
-        </div>
-      </div>
-
-      <div class="pain-item">
-        <img src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=300&q=80" alt="Diet restriction" class="pain-img">
-        <div class="pain-text">
-          <span class="pain-icon">🚫</span>
-          <p>ખાવા-પીવામાં સતત રોકટોક</p>
-          <p class="pain-sub">Constant food restrictions</p>
-        </div>
-      </div>
-
-      <div class="pain-item">
-        <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=300&q=80" alt="Complications fear" class="pain-img">
-        <div class="pain-text">
-          <span class="pain-icon">💔</span>
-          <p>ભવિષ્યમાં Complication નો ડર</p>
-          <p class="pain-sub">Heart, kidney, eyes risk</p>
-        </div>
-      </div>
-
     </div>
-    <div class="pain-bottom-card">
-      <div class="arrow-icon">👉</div>
+    <div class="pain-row"><img src="./Image/Pain2.png" alt=""
+        class="pain-img">
+      <div class="pain-text"><span class="pain-icon-lg">💊</span>
+        <p>દવા લીધા પછી પણ સ્ટેબલ ન થવી</p><small>No stability despite meds</small>
+      </div>
+    </div>
+    <div class="pain-row"><img src="./Image/Pain3.png" alt=""
+        class="pain-img">
+      <div class="pain-text"><span class="pain-icon-lg">😔</span>
+        <p>થાક, ચીડિયાપણું અને કમજોરી</p><small>Fatigue & irritability</small>
+      </div>
+    </div>
+    <div class="pain-row"><img src="./Image/Pain4.png" alt=""
+        class="pain-img">
+      <div class="pain-text"><span class="pain-icon-lg">🚫</span>
+        <p>ખાવા-પીવામાં સતત રોકટોક</p><small>Constant restrictions</small>
+      </div>
+    </div>
+    <div class="pain-row"><img src="./Image/Pain5.png" alt=""
+        class="pain-img">
+      <div class="pain-text"><span class="pain-icon-lg">💔</span>
+        <p>ભવિષ્યમાં Complication નો ડર</p><small>Heart, kidney, eye risk</small>
+      </div>
+    </div>
+    <div class="pain-footer">
+      <div class="ico">👉</div>
       <p>સાચી સમસ્યા માત્ર શૂગર નથી, પણ શરીરનું imbalance + lifestyle છે</p>
     </div>
   </section>
 
-  <!-- ===== PRODUCT INTRO ===== -->
-  <section class="intro-section">
+  <!-- INTRO -->
+  <section class="intro-sec">
     <div class="intro-bg"></div>
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag" style="color:var(--green-light)">🌿 DiabCare</span>
-      <h2 class="section-title">
-        Natural Solution<br>
-        <span class="line2">For Sugar Balance</span>
-      </h2>
-    </div>
-    <div class="intro-product-showcase">
-      <img src="./Image/product.avif" alt="DiabCare Product">
-    </div>
-    <p class="intro-desc">
-      આ એક નેચરલ સપોર્ટ ફોર્મ્યુલા છે જે શરીરને અંદરથી balance કરવામાં મદદ કરે છે, જેથી બ્લડ શૂગર મેનેજ કરવું સરળ બને.
-    </p>
-  </section>
+    <span class="eyebrow" style="color:var(--gl)">🌿 DiabCare</span>
+    <h2 class="sec-title" style="color:#fff;text-align:center">Natural Solution <span class="acc">For Sugar
+        Balance</span></h2>
+    <div class="intro-product"><img src="./Image/Intro.png" alt="DiabCare"></div>
+    <p class="intro-desc">આ એક નેચરલ સપોર્ટ ફોર્મ્યુલા છે જે શરીરને અંદરથી balance કરવામાં મદદ કરે છે, જેથી બ્લડ શૂગર
+      મેનેજ કરવું સરળ બને.</p>
+  </section> 
 
-  <!-- ===== HOW IT WORKS ===== -->
-  <section class="hiw-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag">⚙️ કેવી રીતે કામ કરે</span>
-      <h2 class="section-title">
-        DiabCare<br>
-        <span class="line2">અંદરથી કામ કરે</span>
-      </h2>
+  <!-- HOW IT WORKS -->
+  <section class="hiw-sec">
+    <div class="hiw-head"><span class="eyebrow" style="color:var(--green)">⚙️ કેવી રીતે કામ કરે</span>
+      <h2 class="sec-title">DiabCare <span class="acc" style="color:var(--green)">અંદરથી કામ કરે</span></h2>
     </div>
     <div class="hiw-cards">
-
-      <div class="hiw-card">
-        <img src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=300&q=80" alt="Insulin sensitivity" class="hiw-card-img">
-        <div class="hiw-card-body">
-          <span class="hiw-num">Step 01</span>
+      <div class="hiw-card"><img src="./Image/Step4.png" alt=""
+          class="hiw-card-img">
+        <div class="hiw-body"><span class="hiw-num">Step 01</span>
           <h3>Insulin Sensitivity</h3>
           <p>શરીરમાં insulin sensitivity ને સપોર્ટ કરે છે</p>
         </div>
       </div>
-
-      <div class="hiw-card">
-        <img src="https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=300&q=80" alt="Glucose regulation" class="hiw-card-img">
-        <div class="hiw-card-body">
-          <span class="hiw-num">Step 02</span>
+      <div class="hiw-card"><img src="./Image/Step3.png" alt=""
+          class="hiw-card-img">
+        <div class="hiw-body"><span class="hiw-num">Step 02</span>
           <h3>Glucose Regulate</h3>
           <p>Glucose absorption ને regulate કરવામાં મદદ કરે</p>
         </div>
       </div>
-
-      <div class="hiw-card">
-        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=300&q=80" alt="Metabolism" class="hiw-card-img">
-        <div class="hiw-card-body">
-          <span class="hiw-num">Step 03</span>
+      <div class="hiw-card"><img src="./Image/Step2.png" alt=""
+          class="hiw-card-img">
+        <div class="hiw-body"><span class="hiw-num">Step 03</span>
           <h3>Metabolism સુધારે</h3>
           <p>શરીરનો metabolism સ્વસ્થ બનાવે છે</p>
         </div>
       </div>
-
-      <div class="hiw-card">
-        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=300&q=80" alt="Energy" class="hiw-card-img">
-        <div class="hiw-card-body">
-          <span class="hiw-num">Step 04</span>
+      <div class="hiw-card"><img src="./Image/Step1.png" alt=""
+          class="hiw-card-img">
+        <div class="hiw-body"><span class="hiw-num">Step 04</span>
           <h3>Energy વધારે</h3>
           <p>Energy level વધારવામાં મદદ કરે છે</p>
         </div>
       </div>
-
     </div>
-    <div class="hiw-result-bar">
-      <span>✅</span>
+    <div class="hiw-result"><span>✅</span>
       <p>Sugar Spike ઓછું + Control સારું</p>
     </div>
   </section>
 
-  <!-- ===== BEFORE / AFTER ===== -->
-  <section class="ba-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag" style="color:var(--green-light)">🔄 પહેલા vs પછી</span>
-      <h2 class="section-title">
-        DiabCare વાપર્યા<br>
-        <span class="line2">પછી ફરક</span>
-      </h2>
+  <!-- BEFORE AFTER -->
+  <section class="ba-sec">
+    <div class="ba-head"><span class="eyebrow" style="color:var(--gl)">🔄 પહેલા vs પછી</span>
+      <h2 class="sec-title">DiabCare વાપર્યા <span class="acc">પછી ફરક</span></h2>
     </div>
-
-    <div class="ba-wrapper">
+    <div class="ba-labels">
+      <div class="ba-lbl b">😟 પહેલા</div>
+      <div class="ba-lbl a">😊 પછી</div>
+    </div>
+    <div class="ba-pair">
       <div class="ba-divider"></div>
-
-      <div class="ba-row">
-        <div class="ba-col before">
-          <div class="ba-col-header">😟 પહેલા</div>
-          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&q=80" alt="Before" class="ba-img">
-          <div class="ba-label">અનિયંત્રિત શૂગર, થાક, ચિંતા</div>
-        </div>
-        <div class="ba-col after">
-          <div class="ba-col-header">😊 પછી</div>
-          <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&q=80" alt="After" class="ba-img">
-          <div class="ba-label">Stable Sugar, Energy, ખુશ જીવન</div>
-        </div>
+      <div class="ba-col b"><img src="./Image/Before1.png" alt="">
+        <div class="ba-cap">અનિયંત્રિત શૂગર, થાક, ચિંતા</div>
       </div>
-
-      <div class="ba-row" style="margin-top:2px;">
-        <div class="ba-col before">
-          <img src="https://images.unsplash.com/photo-1603398938378-e54eab446dde?w=300&q=80" alt="Before medicine" class="ba-img" style="height:140px;">
-          <div class="ba-label">દૈનિક ઘણી દવાઓ</div>
-        </div>
-        <div class="ba-col after">
-          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&q=80" alt="After healthy" class="ba-img" style="height:140px;">
-          <div class="ba-label">Natural Routine Support</div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="ba-points">
-      <div class="ba-point">
-        <div class="ba-point-icon bad">😫</div>
-        <div class="ba-point-text">
-          <strong>પહેલા: Constant Sugar Spikes</strong>
-          રોજ ઉપર-નીચે જતી શૂગર
-        </div>
-      </div>
-      <div class="ba-point">
-        <div class="ba-point-icon good">✅</div>
-        <div class="ba-point-text">
-          <strong>પછી: Stable Blood Sugar</strong>
-          DiabCare સાથે balanced levels
-        </div>
-      </div>
-      <div class="ba-point">
-        <div class="ba-point-icon bad">😩</div>
-        <div class="ba-point-text">
-          <strong>પહેલા: Low Energy & Weakness</strong>
-          સવારથી સાંજ થાક
-        </div>
-      </div>
-      <div class="ba-point">
-        <div class="ba-point-icon good">⚡</div>
-        <div class="ba-point-text">
-          <strong>પછી: Improved Energy</strong>
-          દિવસ energetic અને active
-        </div>
+      <div class="ba-col a"><img src="./Image/After1.png" alt="">
+        <div class="ba-cap">Stable Sugar, Energy, ખુશ જીવન</div>
       </div>
     </div>
+    <div class="ba-pair" style="margin-top:2px">
+      <div class="ba-divider"></div>
+      <div class="ba-col b"><img src="./Image/Before2.png" alt="">
+        <div class="ba-cap">દૈનિક ઘણી દવાઓ</div>
+      </div>
+      <div class="ba-col a"><img src="./Image/After2.png" alt="">
+        <div class="ba-cap">Natural Routine Support</div>
+      </div>
+    </div>
+ 
   </section>
 
-  <!-- ===== INGREDIENTS ===== -->
-  <section class="ing-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag">🌱 Ingredients</span>
-      <h2 class="section-title">
-        100% Natural<br>
-        <span class="line2">Ayurvedic Herbs</span>
-      </h2>
+  <!-- INGREDIENTS -->
+  <section class="ing-sec">
+    <div class="ing-head"><span class="eyebrow" style="color:var(--green)">🌱 Ingredients</span>
+      <h2 class="sec-title">100% Natural <span class="acc" style="color:var(--green)">Ayurvedic Herbs</span></h2>
     </div>
-
     <div class="ing-grid">
-      <div class="ing-card">
-        <img src="https://images.unsplash.com/photo-1611073615830-9a9e6b38e7e9?w=300&q=80" alt="Ashwagandha" class="ing-img">
+      <div class="ing-card"><img src="./Image/Ind1.png" alt=""
+          class="ing-img">
         <div class="ing-overlay"></div>
-        <div class="ing-info">
-          <span class="ing-name">અશ્વગંધા</span>
-          <p class="ing-desc">Stress ઓછો કરી sugar balance support</p>
+        <div class="ing-info"><span class="ing-name">અશ્વગંધા</span>
+          <p class="ing-hint">Stress ઓછો કરી sugar balance support</p>
         </div>
       </div>
-
-      <div class="ing-card">
-        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&q=80" alt="Triphala" class="ing-img">
+      <div class="ing-card"><img src="./Image/Ind2.png" alt=""
+          class="ing-img">
         <div class="ing-overlay"></div>
-        <div class="ing-info">
-          <span class="ing-name">ત્રિફળા</span>
-          <p class="ing-desc">Digestion & metabolism support</p>
+        <div class="ing-info"><span class="ing-name">ત્રિફળા</span>
+          <p class="ing-hint">Digestion & metabolism support</p>
         </div>
       </div>
-
-      <div class="ing-card">
-        <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&q=80" alt="Giloy" class="ing-img">
+      <div class="ing-card"><img src="./Image/Ind3.png" alt=""
+          class="ing-img">
         <div class="ing-overlay"></div>
-        <div class="ing-info">
-          <span class="ing-name">ગિલોય</span>
-          <p class="ing-desc">Immunity & blood purification</p>
+        <div class="ing-info"><span class="ing-name">ગિલોય</span>
+          <p class="ing-hint">Immunity & blood purification</p>
         </div>
       </div>
-
-      <div class="ing-card">
-        <img src="https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=300&q=80" alt="Vacha" class="ing-img">
+      <div class="ing-card"><img src="./Image/Ind4.png" alt=""
+          class="ing-img">
         <div class="ing-overlay"></div>
-        <div class="ing-info">
-          <span class="ing-name">વચા</span>
-          <p class="ing-desc">Nervous system & energy support</p>
+        <div class="ing-info"><span class="ing-name">વચા</span>
+          <p class="ing-hint">Nervous system & energy support</p>
         </div>
       </div>
     </div>
-
-    <div class="ing-note">
-      <span>🌿</span>
+    <div class="ing-footer"><span>🌿</span>
       <p>આ તમામ જડીબુટ્ટીઓ પરંપરાગત રીતે sugar balance માટે જાણીતી છે</p>
     </div>
   </section>
 
-  <!-- ===== RECOMMENDATION ===== -->
-  <section class="rec-section">
+  <!-- RECOMMENDATION -->
+  <section class="rec-sec">
     <div class="rec-bg"></div>
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag" style="color:var(--green-light)">👨‍⚕️ Approach</span>
-      <h2 class="section-title">
-        Modern + Ayurveda<br>
-        <span class="line2">Balanced Approach</span>
-      </h2>
-    </div>
-
-    <div class="rec-comparison">
+    <span class="eyebrow" style="color:var(--gl)">👨‍⚕️ Approach</span>
+    <h2 class="sec-title" style="color:#fff">Modern + Ayurveda <span class="acc">Balanced Approach</span></h2>
+    <div class="rec-compare">
       <div class="rec-col old">
-        <div class="rec-col-head">❌ સામાન્ય રીત</div>
-        <img src="https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=300&q=80" alt="Old approach" class="rec-col-img">
+        <div class="rec-col-h">❌ સામાન્ય રીત</div><img
+          src="./Image/Before.png" alt="" class="rec-col-img">
         <div class="rec-col-items">
-          <div class="rec-col-item"><div class="dot-r"></div>માત્ર દવા પર આધાર</div>
-          <div class="rec-col-item"><div class="dot-r"></div>Temporary control</div>
-          <div class="rec-col-item"><div class="dot-r"></div>Side effects નો ભય</div>
+          <div class="rec-item">
+            <div class="rdot"></div>માત્ર દવા પર આધાર
+          </div>
+          <div class="rec-item">
+            <div class="rdot"></div>Temporary control
+          </div>
+          <div class="rec-item">
+            <div class="rdot"></div>Side effects નો ભય
+          </div>
         </div>
       </div>
       <div class="rec-col new">
-        <div class="rec-col-head">✅ DiabCare રીત</div>
-        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&q=80" alt="New approach" class="rec-col-img">
+        <div class="rec-col-h">✅ DiabCare રીત</div><img
+          src="./Image/After.png" alt="" class="rec-col-img">
         <div class="rec-col-items">
-          <div class="rec-col-item"><div class="dot-r"></div>Holistic approach</div>
-          <div class="rec-col-item"><div class="dot-r"></div>Long-term management</div>
-          <div class="rec-col-item"><div class="dot-r"></div>Natural support</div>
+          <div class="rec-item">
+            <div class="rdot"></div>Holistic approach
+          </div>
+          <div class="rec-item">
+            <div class="rdot"></div>Long-term management
+          </div>
+          <div class="rec-item">
+            <div class="rdot"></div>Natural support
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="rec-row">
-      <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&q=80" alt="Ayurveda">
-      <div class="rec-row-text">
-        <h4>Ayurvedic Principles</h4>
-        <p>Ayurvedic principles પર આધારિત formula</p>
+    <div class="rec-rows-wrap">
+      <div class="rec-row"><img src="./Image/rec1.png" alt="">
+        <div>
+          <h4>Ayurvedic Principles</h4>
+          <p>Ayurvedic principles પર આધારિત formula</p>
+        </div>
       </div>
-    </div>
-    <div class="rec-row">
-      <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=300&q=80" alt="Lifestyle">
-      <div class="rec-row-text">
-        <h4>Lifestyle Approach</h4>
-        <p>Lifestyle + natural support approach</p>
+      <div class="rec-row"><img src="./Image/rec2.png" alt="">
+        <div>
+          <h4>Lifestyle Approach</h4>
+          <p>Lifestyle + natural support approach</p>
+        </div>
       </div>
-    </div>
-    <div class="rec-row">
-      <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&q=80" alt="Community">
-      <div class="rec-row-text">
-        <h4>Trusted by Many</h4>
-        <p>ઘણા લોકો daily routine સાથે ઉપયોગ કરી રહ્યા છે</p>
+      <div class="rec-row"><img src="./Image/rec3.png" alt="">
+        <div>
+          <h4>Trusted by Many</h4>
+          <p>ઘણા લોકો daily routine સાથે ઉપયોગ કરી રહ્યા છે</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== HOW TO USE ===== -->
-  <section class="use-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag">🕒 ઉપયોગ</span>
-      <h2 class="section-title">
-        કેવી રીતે<br>
-        <span class="line2">ઉપયોગ કરવો?</span>
-      </h2>
+  <!-- HOW TO USE -->
+  <section class="use-sec">
+    <div class="use-head"><span class="eyebrow" style="color:var(--green)">🕒 ઉપયોગ</span>
+      <h2 class="sec-title">કેવી રીતે <span class="acc" style="color:var(--green)">ઉપયોગ કરવો?</span></h2>
     </div>
     <div class="use-steps">
-
-      <div class="use-step">
-        <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&q=80" alt="Take dose" class="use-step-img">
-        <div class="use-step-body">
-          <span class="use-step-num">Step 01</span>
+      <div class="use-step"><img src="./Image/How3.png" alt=""
+          class="use-step-img">
+        <div class="use-body"><span class="use-num">Step 01</span>
           <h3>1–2 વખત લો</h3>
           <p>દિવસમાં 1–2 વખત (doctor/advice મુજબ)</p>
         </div>
       </div>
-
-      <div class="use-step">
-        <img src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=300&q=80" alt="After meal" class="use-step-img">
-        <div class="use-step-body">
-          <span class="use-step-num">Step 02</span>
+      <div class="use-step"><img src="./Image/How2.png" alt=""
+          class="use-step-img">
+        <div class="use-body"><span class="use-num">Step 02</span>
           <h3>ભોજન પછી</h3>
           <p>ભોજન પછી લેવુ વધુ સારું</p>
         </div>
       </div>
-
-      <div class="use-step">
-        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&q=80" alt="Regular use" class="use-step-img">
-        <div class="use-step-body">
-          <span class="use-step-num">Step 03</span>
+      <div class="use-step"><img src="./Image/How1.png" alt=""
+          class="use-step-img">
+        <div class="use-body"><span class="use-num">Step 03</span>
           <h3>નિયમિત ઉપયોગ</h3>
           <p>નિયમિત ઉપયોગથી સારું પરિણામ</p>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- ===== CERTIFICATIONS ===== -->
-  <section class="cert-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag" style="color:var(--green-light)">✅ Certified</span>
-      <h2 class="section-title" style="color:var(--white)">
-        Quality &<br>
-        <span class="line2">Safety Assured</span>
-      </h2>
-    </div>
+  <!-- CERTIFICATIONS -->
+  <section class="cert-sec">
+    <span class="eyebrow" style="color:var(--gl)">✅ Certified</span>
+    <h2 class="sec-title" style="color:#fff">Quality & <span class="acc">Safety Assured</span></h2>
     <div class="cert-grid">
-      <div class="cert-card">
-        <img src="https://images.unsplash.com/photo-1568219557405-376e23e4f7cf?w=300&q=80" alt="GMP" class="cert-img">
-        <span class="cert-name">GMP Certified</span>
-        <p class="cert-desc">Good Manufacturing Practice</p>
+      <div class="cert-card"><img src="./Image/Trust1.png" alt=""
+          class="cert-img">
+        <div class="cert-info"><span class="cert-name">GMP Certified</span>
+          <p class="cert-desc">Good Manufacturing Practice</p>
+        </div>
       </div>
-      <div class="cert-card">
-        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=300&q=80" alt="ISO" class="cert-img">
-        <span class="cert-name">ISO Certified</span>
-        <p class="cert-desc">International Quality Standard</p>
+      <div class="cert-card"><img src="./Image/Trust2.png" alt=""
+          class="cert-img">
+        <div class="cert-info"><span class="cert-name">ISO Certified</span>
+          <p class="cert-desc">International Quality Standard</p>
+        </div>
       </div>
-      <div class="cert-card">
-        <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=300&q=80" alt="AYUSH" class="cert-img">
-        <span class="cert-name">AYUSH Approved</span>
-        <p class="cert-desc">Ministry of AYUSH</p>
+      <div class="cert-card"><img src="./Image/Trust3.png" alt=""
+          class="cert-img">
+        <div class="cert-info"><span class="cert-name">AYUSH Approved</span>
+          <p class="cert-desc">Ministry of AYUSH</p>
+        </div>
       </div>
-      <div class="cert-card">
-        <img src="https://images.unsplash.com/photo-1607619662634-3ac55ec0e216?w=300&q=80" alt="FSSAI" class="cert-img">
-        <span class="cert-name">FSSAI Registered</span>
-        <p class="cert-desc">Food Safety Standards</p>
+      <div class="cert-card"><img src="./Image/Trust4.png" alt=""
+          class="cert-img">
+        <div class="cert-info"><span class="cert-name">FSSAI Registered</span>
+          <p class="cert-desc">Food Safety Standards</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== OFFER ===== -->
-  <section class="offer-section">
+  <!-- OFFER -->
+  <section class="offer-sec">
     <div class="offer-top">
       <div class="offer-badge">🔥 Limited Time Offer</div>
       <h2 class="offer-title">આજે ઓર્ડર કરો<br>& બચાવો!</h2>
       <p class="offer-sub">Special discount + Free gifts સાથે</p>
     </div>
+    <div>
+      <div class="offer-row"><img src="./Image/offer1.avif" alt=""
+          class="offer-row-img">
+        <div class="offer-row-text"><strong>🚚 FREE Delivery</strong><span>ઘરે ઘરે ફ્રી ડિલિવરી</span></div>
+      </div>
+      <div class="offer-row"><img src="./Image/offer2.avif" alt=""
+          class="offer-row-img">
+        <div class="offer-row-text"><strong>🥗 FREE Diet Chart</strong><span>Expert-designed diet plan</span></div>
+      </div>
+      <div class="offer-row"><img src="./Image/offer3.avif" alt=""
+          class="offer-row-img">
+        <div class="offer-row-text"><strong>🏷️ 10% OFF</strong><span>Today only – Limited stock</span></div>
+      </div>
+    </div>
+    <div class="offer-cta"><a href="#order" class="btn-big">હમણાં જ ઓર્ડર કરો<small>Sugar Management Journey શરૂ
+          કરો</small></a></div>
+  </section>
 
-    <div class="offer-benefits">
-
-      <div class="offer-benefit">
-        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=300&q=80" alt="Free delivery" class="offer-benefit-img">
-        <div class="offer-benefit-text">
-          <strong>🚚 FREE Delivery</strong>
-          <span>ઘરે ઘરે ફ્રી ડિલિવરી</span>
+  <!-- INSTAGRAM REELS SWIPER -->
+  <section class="reels-sec">
+    <div class="reels-head">
+      <span class="eyebrow" style="color:var(--gl)">📱 Instagram Reels</span>
+      <h2 class="sec-title">Real People, <span class="acc">Real Results</span></h2>
+      <p class="sec-sub" style="margin-top:8px">DiabCare વાપરતા લોકોના experience જુઓ</p>
+    </div>
+    <div class="reels-swiper-wrap">
+      <div class="swiper reels-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide reel-slide">
+            <div class="reel-inner"><video src="./Image/Video1.mp4" playsinline></video></div>
+            <div class="reel-overlay"></div>
+            <div class="reel-play">▶</div>
+            <div class="reel-info"><span class="reel-user"><span class="reel-dot"></span>@diabcare_official</span></div>
+          </div>
+          <div class="swiper-slide reel-slide">
+            <div class="reel-inner"><video src="./Image/Video2.mp4" playsinline></video></div>
+            <div class="reel-overlay"></div>
+            <div class="reel-play">▶</div>
+            <div class="reel-info"><span class="reel-user"><span class="reel-dot"></span>@health_gujarat</span></div>
+          </div>
+          <div class="swiper-slide reel-slide">
+            <div class="reel-inner"><video src="./Image/Video3.MOV" playsinline></video></div>
+            <div class="reel-overlay"></div>
+            <div class="reel-play">▶</div>
+            <div class="reel-info"><span class="reel-user"><span class="reel-dot"></span>@ayurveda_tips</span></div>
+          </div>
+          <div class="swiper-slide reel-slide">
+            <div class="reel-inner"><video src="./Image/Video4.mp4" playsinline></video></div>
+            <div class="reel-overlay"></div>
+            <div class="reel-play">▶</div>
+            <div class="reel-info"><span class="reel-user"><span class="reel-dot"></span>@sugar_free_life</span></div>
+          </div>
+          <div class="swiper-slide reel-slide">
+            <div class="reel-inner"><video src="./Image/Video5.mp4" playsinline></video></div>
+            <div class="reel-overlay"></div>
+            <div class="reel-play">▶</div>
+            <div class="reel-info"><span class="reel-user"><span class="reel-dot"></span>@natural_health_in</span></div>
+          </div>
+          <div class="swiper-slide reel-slide">
+            <div class="reel-inner"><video src="./Image/Video6.mp4" playsinline></video></div>
+            <div class="reel-overlay"></div>
+            <div class="reel-play">▶</div>
+            <div class="reel-info"><span class="reel-user"><span class="reel-dot"></span>@diabcare_results</span></div>
+          </div>
+          <div class="swiper-slide reel-slide">
+            <div class="reel-inner"><video src="./Image/Vedio7.mp4" playsinline></video></div>
+            <div class="reel-overlay"></div>
+            <div class="reel-play">▶</div>
+            <div class="reel-info"><span class="reel-user"><span class="reel-dot"></span>@wellness_wala</span></div>
+          </div>
         </div>
       </div>
-
-      <div class="offer-benefit">
-        <img src="https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=300&q=80" alt="Free diet chart" class="offer-benefit-img">
-        <div class="offer-benefit-text">
-          <strong>🥗 FREE Diet Chart</strong>
-          <span>Expert-designed diet plan</span>
-        </div>
+      <div class="reels-nav">
+        <button class="r-btn" id="rPrev">&#8592;</button>
+        <!-- <div class="r-pag swiper-pagination" id="rPag"></div> -->
+        <button class="r-btn" id="rNext">&#8594;</button>
       </div>
-
-      <div class="offer-benefit">
-        <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&q=80" alt="Cash on delivery" class="offer-benefit-img">
-        <div class="offer-benefit-text">
-          <strong>💵 Cash on Delivery</strong>
-          <span>COD ઉપલબ્ધ – No advance</span>
-        </div>
-      </div>
-
-      <div class="offer-benefit">
-        <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?w=300&q=80" alt="Discount" class="offer-benefit-img">
-        <div class="offer-benefit-text">
-          <strong>🏷️ 10% OFF</strong>
-          <span>Today only – Limited stock</span>
-        </div>
-      </div>
-
     </div>
 
-    <div class="offer-cta">
-      <a href="#order" class="btn-cta-big">
-        હમણાં જ ઓર્ડર કરો
-        <span class="cta-sub">Sugar Management Journey શરૂ કરો</span>
-      </a>
+  </section>
+
+  <!-- YOUTUBE REVIEWS -->
+  <section class="yt-sec">
+    <span class="eyebrow" style="color:var(--green)">▶️ YouTube Reviews</span>
+    <h2 class="sec-title">Customer Video <span class="acc" style="color:var(--green)">Reviews</span></h2>
+    <div class="yt-cards">
+      <div class="yt-card">
+        <div class="yt-embed"><iframe src="https://www.youtube.com/embed/FHkk6A3NlCU" allowfullscreen loading="lazy"></iframe></div>
+        <div class="yt-card-body">
+          <div class="yt-rev">
+            <!-- <img src="https://www.youtube.com/embed/0EsBTsrSNsY" alt=""
+              class="yt-rev-img"> -->
+            <div>
+              <p class="yt-rev-name">રાજેશ પટેલ</p>
+              <p class="yt-rev-loc">સુરત, ગુજરાત</p>
+            </div>
+          </div>
+          <div class="yt-stars">★★★★★</div>
+          <p class="yt-quote">"હવે મારી શૂગર પહેલા કરતા ઘણી stable છે. DiabCare ખૂબ ઉપયોગી છે!"</p><span
+            class="yt-verified">✅ Verified Purchase</span>
+        </div>
+      </div>
+      <div class="yt-card">
+        <div class="yt-embed"><iframe src="https://www.youtube.com/embed/0EsBTsrSNsY"
+            allowfullscreen loading="lazy"></iframe></div>
+        <div class="yt-card-body">
+          <div class="yt-rev">
+            <!-- <img src="https://www.youtube.com/embed/FHkk6A3NlCU" alt=""
+              class="yt-rev-img"> -->
+            <div>
+              <p class="yt-rev-name">સ્મિતા શાહ</p>
+              <p class="yt-rev-loc">અમદાવાદ, ગુજરાત</p>
+            </div>
+          </div>
+          <div class="yt-stars">★★★★★</div>
+          <p class="yt-quote">"Energy level સુધરી ગયો છે. સવારે હવે fresh feel થાય છે."</p><span class="yt-verified">✅
+            Verified Purchase</span>
+        </div>
+      </div>
+      <div class="yt-card">
+        <div class="yt-embed"><iframe src="https://www.youtube.com/embed/N8_4mKkMY5o"
+            allowfullscreen loading="lazy"></iframe></div>
+        <div class="yt-card-body">
+          <div class="yt-rev">
+            <!-- <img src="https://www.youtube.com/embed/N8_4mKkMY5o" alt=""
+              class="yt-rev-img"> -->
+            <div>
+              <p class="yt-rev-name">મહેન્દ્ર દેસાઈ</p>
+              <p class="yt-rev-loc">વડોદરા, ગુજરાત</p>
+            </div>
+          </div>
+          <div class="yt-stars">★★★★☆</div>
+          <p class="yt-quote">"દૈનિક જીવન સરળ લાગી રહ્યું છે. Natural product trust worthy છે."</p><span
+            class="yt-verified">✅ Verified Purchase</span>
+        </div>
+      </div>
+    </div>
+    <p class="yt-note">Results may vary — દરેક વ્યક્તિ અલગ હોય છે</p>
+  </section>
+
+  <!-- ORDER FORM -->
+  <section class="order-sec" id="order">
+    <span class="eyebrow" style="color:var(--gl)">📝 Order Now</span>
+    <h2 class="sec-title" style="color:#fff;margin-bottom:clamp(16px,4vw,22px)">ઓર્ડર કરો <span class="acc">Free
+        Delivery સાથે</span></h2>
+    <div class="order-pills">
+      <div class="opill">🚚 Free Delivery</div>
+      <div class="opill">🥗 Free Diet Chart</div>
+      <div class="opill">💵 COD</div>
+      <div class="opill">🏷️ 10% OFF</div>
+    </div>
+    <div class="once-notice">
+      <span>⏰</span>
+      <p>આ offer <strong id="timerDisplay">23:59:59</strong> માં સમાપ્ત — <strong>હવે ઓર્ડર કરો!</strong></p>
+    </div>
+    <div class="order-card">
+      <div class="fgroup">
+        <label class="flabel">👤 નામ</label>
+        <span class="ficon">👤</span>
+        <input class="finput" type="text" id="fname" placeholder="તમારું પૂરું નામ" required>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">📱 ફોન નંબર</label>
+        <span class="ficon">📱</span>
+        <input class="finput" type="tel" id="fphone" placeholder="10 digit mobile number" maxlength="10"
+          pattern="[0-9]{10}" required>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">🏠 સરનામું</label>
+        <span class="ficon" style="top:clamp(13px,3.5vw,17px);transform:none">🏠</span>
+        <textarea class="finput" id="faddr" placeholder="ઘર નં, ગ, જિલ્લો, રાજ્ય, Pincode" required></textarea>
+      </div>
+      <span class="qty-label-t">📦 Quantity પસંદ કરો</span>
+      <div class="submit-wrap">
+        <button class="order-btn" id="oBtn" onclick="doOrder()">
+          <span id="oBtnLbl">🛒 ઓર્ડર કન્ફર્મ કરો</span>
+          <small>Free Delivery + 10% OFF સાથે</small>
+          <div class="oload" id="oLoad"></div>
+        </button>
+      </div>
+      <div class="trust-row">
+        <div class="trust-tag"><span class="tg">●</span> 100% Secure</div>
+        <div class="trust-tag"><span class="tg">●</span> COD Available</div>
+        <div class="trust-tag"><span class="tg">●</span> Free Delivery</div>
+      </div>
     </div>
   </section>
 
-  <!-- ===== REVIEWS ===== -->
-  <section class="review-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag">⭐ Customer Reviews</span>
-      <h2 class="section-title">
-        Real Results,<br>
-        <span class="line2">Real People</span>
-      </h2>
+  <!-- TEXT REVIEWS -->
+  <section class="review-sec">
+    <div class="review-head"><span class="eyebrow" style="color:var(--gl)">⭐ Customer Reviews</span>
+      <h2 class="sec-title">Real Results, <span class="acc">Real People</span></h2>
     </div>
     <div class="review-cards">
-
-      <div class="review-card">
-        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=200&q=80" alt="Customer 1" class="review-img">
-        <div class="review-body">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-name">રાજેશ પટેલ, સુરત</p>
-          <p class="review-text">"હવે મારી શૂગર પહેલા કરતા ઘણી stable છે. DiabCare ખૂબ ઉપયોગી છે!"</p>
-          <span class="review-meta">✅ Verified Purchase</span>
+      <div class="rev-card"><img src="./Image/Client1.png" alt=""
+          class="rev-avatar">
+        <div>
+          <div class="rev-stars-t">★★★★★</div>
+          <p class="rev-name">રાજેશ પટેલ, સુરત</p>
+          <p class="rev-text">"હવે મારી શૂગર પહેલા કરતા ઘણી stable છે"</p><span class="rev-badge">✅ Verified
+            Purchase</span>
         </div>
       </div>
-
-      <div class="review-card">
-        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80" alt="Customer 2" class="review-img">
-        <div class="review-body">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-name">સ્મિતા શાહ, અમદાવાદ</p>
-          <p class="review-text">"Energy level સુધરી ગયો છે. સવારે હવે fresh feel થાય છે."</p>
-          <span class="review-meta">✅ Verified Purchase</span>
+      <div class="rev-card"><img src="./Image/Client2.png" alt=""
+          class="rev-avatar">
+        <div>
+          <div class="rev-stars-t">★★★★★</div>
+          <p class="rev-name">સ્મિતા શાહ, અમદાવાદ</p>
+          <p class="rev-text">"energy level સુધરી ગયો છે"</p><span class="rev-badge">✅ Verified Purchase</span>
         </div>
       </div>
-
-      <div class="review-card">
-        <img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=200&q=80" alt="Customer 3" class="review-img">
-        <div class="review-body">
-          <div class="review-stars">★★★★☆</div>
-          <p class="review-name">મહેન્દ્ર દેસાઈ, વડોદરા</p>
-          <p class="review-text">"દૈનિક જીવન સરળ લાગી રહ્યું છે. Natural product trust worthy છે."</p>
-          <span class="review-meta">✅ Verified Purchase</span>
+      <div class="rev-card"><img src="./Image/Client3.png" alt=""
+          class="rev-avatar">
+        <div>
+          <div class="rev-stars-t">★★★★☆</div>
+          <p class="rev-name">મહેન્દ્ર દેસાઈ, વડોદરા</p>
+          <p class="rev-text">"દૈનિક જીવન સરળ લાગી રહ્યું છે"</p><span class="rev-badge">✅ Verified Purchase</span>
         </div>
       </div>
-
-      <div class="review-card">
-        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80" alt="Customer 4" class="review-img">
-        <div class="review-body">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-name">ભાવના ગઢવી, રાજકોટ</p>
-          <p class="review-text">"DiabCare સાથે routine follow કરું છું, ઘણો ફરક જણાય છે."</p>
-          <span class="review-meta">✅ Verified Purchase</span>
+      <div class="rev-card"><img src="./Image/Client4.png" alt=""
+          class="rev-avatar">
+        <div>
+          <div class="rev-stars-t">★★★★★</div>
+          <p class="rev-name">ભાવના ગઢવી, રાજકોટ</p>
+          <p class="rev-text">"DiabCare સાથે routine follow કરું છું, ઘણો ફરક જણાય છે"</p><span class="rev-badge">✅
+            Verified Purchase</span>
         </div>
       </div>
-
     </div>
     <p class="review-note">Results may vary — દરેક વ્યક્તિ અલગ હોય છે</p>
   </section>
 
-  <!-- ===== ORDER FORM ===== -->
-  <section class="order-section" id="order">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag" style="color:var(--green-light)">📝 Order Now</span>
-      <h2 class="section-title" style="color:var(--white)">
-        ઓર્ડર કરો<br>
-        <span class="line2">Free Delivery સાથે</span>
-      </h2>
+  <!-- FAQ -->
+  <section class="faq-sec">
+    <span class="eyebrow" style="color:var(--green)">❓ FAQ</span>
+    <h2 class="sec-title">સામાન્ય <span class="acc" style="color:var(--green)">સવાલો</span></h2>
+    <div class="faq-item">
+      <div class="faq-q" onclick="togFaq(this)"><span class="faq-qt">શું આ સંપૂર્ણ cure કરે છે?</span>
+        <div class="faq-ico">+</div>
+      </div>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">નહીં, આ માત્ર sugar management માં મદદ કરે છે. Cure નો દાવો કરવામાં આવતો નથી.</div>
+      </div>
     </div>
-
-    <div class="order-form">
-      <div class="form-group">
-        <label>👤 નામ</label>
-        <input type="text" id="name" placeholder="તમારું પૂરું નામ">
+    <div class="faq-item">
+      <div class="faq-q" onclick="togFaq(this)"><span class="faq-qt">કેટલા દિવસમાં અસર દેખાશે?</span>
+        <div class="faq-ico">+</div>
       </div>
-      <div class="form-group">
-        <label>📱 ફોન નંબર</label>
-        <input type="tel" id="phone" placeholder="10 digit mobile number">
+      <div class="faq-ans">
+        <div class="faq-ans-inner">કેટલાક લોકોને થોડા અઠવાડિયામાં ફેરફાર અનુભવાય છે. Individual results vary.</div>
       </div>
-      <div class="form-group">
-        <label>🏠 સરનામું</label>
-        <textarea id="address" placeholder="ઘર નં, ગ, જિલ્લો, રાજ્ય, Pincode"></textarea>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="togFaq(this)"><span class="faq-qt">શું દવા સાથે લઈ શકાય?</span>
+        <div class="faq-ico">+</div>
       </div>
-      <div class="form-group">
-        <label>📦 Quantity</label>
-        <select id="quantity">
-          <option value="1">1 Bottle – Best Price</option>
-          <option value="2">2 Bottles – Extra Savings</option>
-          <option value="3">3 Bottles – Maximum Value</option>
-        </select>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">ડોક્ટરની સલાહ લેવી વધુ સારું. Medical condition ધરાવતા વ્યક્તિ consult ચોક્કસ કરે.
+        </div>
       </div>
-
-      <button class="order-submit-btn" id="submitBtn" onclick="submitOrder()">
-        <span id="btnText">🛒 ઓર્ડર કન્ફર્મ કરો</span>
-        <div class="loading-bar" id="loadingBar"></div>
-      </button>
-
-      <div class="order-trust">
-        <div class="trust-item"><span class="dot">●</span> Free Delivery</div>
-        <div class="trust-item"><span class="dot">●</span> COD Available</div>
-        <div class="trust-item"><span class="dot">●</span> 10% OFF</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="togFaq(this)"><span class="faq-qt">શું દરેક ઉંમરના લોકો ઉપયોગ કરી શકે?</span>
+        <div class="faq-ico">+</div>
+      </div>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">હા, પણ medical condition ધરાવતા વ્યક્તિ doctor ની સલાહ જરૂરી છે.</div>
       </div>
     </div>
   </section>
 
-  <!-- ===== FAQ ===== -->
-  <section class="faq-section">
-    <div class="section-eyebrow">
-      <span class="eyebrow-tag">❓ FAQ</span>
-      <h2 class="section-title">
-        સામાન્ય<br>
-        <span class="line2">સવાલો</span>
-      </h2>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">શું આ સંપૂર્ણ cure કરે છે?</span>
-        <div class="faq-icon">+</div>
-      </div>
-      <div class="faq-a">
-        <div class="faq-a-inner">નહીં, આ માત્ર sugar management માં મદદ કરે છે. Cure નો દાવો કરવામાં આવતો નથી.</div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">કેટલા દિવસમાં અસર દેખાશે?</span>
-        <div class="faq-icon">+</div>
-      </div>
-      <div class="faq-a">
-        <div class="faq-a-inner">કેટલાક લોકોને થોડા અઠવાડિયામાં ફેરફાર અનુભવાય છે. Individual results vary.</div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">શું દવા સાથે લઈ શકાય?</span>
-        <div class="faq-icon">+</div>
-      </div>
-      <div class="faq-a">
-        <div class="faq-a-inner">ડોક્ટરની સલાહ લેવી વધુ સારું. Medical condition ધરાવતા વ્યક્તિ consult ચોક્કસ કરે.</div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">શું દરેક ઉંમરના લોકો ઉપયોગ કરી શકે?</span>
-        <div class="faq-icon">+</div>
-      </div>
-      <div class="faq-a">
-        <div class="faq-a-inner">હા, પણ medical condition ધરાવતા વ્યક્તિ doctor ની સલાહ જરૂરી છે.</div>
-      </div>
-    </div>
+  <!-- DISCLAIMER -->
+  <section class="disc-sec">
+    <p class="disc-label">⚠️ Disclaimer</p>
+    <p class="disc-text">આ product કોઈ પણ બીમારીને cure કરવાનો દાવો કરતું નથી. આ માત્ર blood sugar management માં
+      support આપે છે. કોઈપણ medical condition માં doctor ની સલાહ જરૂરી છે. Results may vary from person to person. Not
+      intended to diagnose, treat, cure, or prevent any disease.</p>
   </section>
 
-  <!-- ===== DISCLAIMER ===== -->
-  <section class="disclaimer-section">
-    <p class="disclaimer-title">⚠️ Disclaimer</p>
-    <p class="disclaimer-text">
-      આ product કોઈ પણ બીમારીને cure કરવાનો દાવો કરતું નથી. આ માત્ર blood sugar management માં support આપે છે. કોઈપણ medical condition માં doctor ની સલાહ જરૂરી છે. Results may vary from person to person. Not intended to diagnose, treat, cure, or prevent any disease.
-    </p>
-  </section>
-
-  <!-- Extra padding for sticky bar -->
-  <div style="height:80px;background:var(--black)"></div>
-
-</div><!-- end .page -->
-
-<!-- STICKY CTA -->
-<div class="sticky-cta">
-  <div class="sticky-cta-text">
-    <strong>DiabCare – Limited Stock!</strong>
-    <span>Free Delivery + 10% OFF Today</span>
+  <!-- STICKY BAR -->
+  <div class="sticky-bar">
+    <div class="sticky-info"><strong>DiabCare – Limited Stock!</strong><span>Free Delivery + 10% OFF Today</span></div>
+    <a href="#order" class="sticky-btn">Order Now</a>
   </div>
-  <a href="#order" class="sticky-cta-btn">Order Now</a>
-</div>
 
-<!-- SUCCESS MODAL -->
-<div class="modal-overlay" id="successModal">
-  <div class="modal-box">
-    <span class="modal-icon">🎉</span>
-    <p class="modal-title">ઓર્ડર Confirmed!</p>
-    <p class="modal-text">
-      તમારો ઓર્ડર સ્વીકૃત થઈ ગયો છે.<br>
-      અમારી team ટૂંક સમયમાં તમારો સંપર્ક કરશે.<br><br>
-      <strong style="color:var(--green-light)">Free Delivery + Diet Chart</strong> સાથે ✅
-    </p>
-    <button class="modal-close" onclick="closeModal()">ઠીક છે</button>
+  <!-- SUCCESS MODAL -->
+  <div class="modal-bg" id="modal">
+    <div class="modal-box">
+      <span class="modal-ico">🎉</span>
+      <p class="modal-title">ઓર્ડર Confirmed!</p>
+      <p class="modal-text">તમારો ઓર્ડર સ્વીકૃત થઈ ગયો છે.<br>અમારી team ટૂંક સમયમાં સંપર્ક કરશે.<br><br><strong
+          style="color:var(--gl)">Free Delivery + Diet Chart ✅</strong></p>
+      <button class="modal-close" onclick="closeModal()">ઠીક છે</button>
+    </div>
   </div>
-</div>
 
-<script>
-  function toggleFaq(el) {
-    const item = el.parentElement;
-    item.classList.toggle('open');
-  }
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    // SWIPER
+    const rSwiper = new Swiper('.reels-swiper', {
+      centeredSlides: true,
+      slidesPerView: 'auto',
+      spaceBetween: 14,
+      loop: true,
+      speed: 600,
+      watchSlidesProgress: true,
+      breakpoints: {
+        0: { spaceBetween: 12 },
+        768: { spaceBetween: 18 },
+        1080: { spaceBetween: 22 }
+      },
+      navigation: { nextEl: '#rNext', prevEl: '#rPrev' },
+      pagination: { el: '#rPag', clickable: true },
+    });
 
-  function submitOrder() {
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const address = document.getElementById('address').value.trim();
-
-    if (!name || !phone || !address) {
-      alert('Please fill all required fields');
-      return;
+    // VIDEO — pause all when slide changes
+    function pauseAllReels() {
+      document.querySelectorAll('.reels-swiper .swiper-slide').forEach(s => {
+        const v = s.querySelector('video');
+        if (v) { v.pause(); v.currentTime = 0; }
+        s.classList.remove('is-playing');
+      });
     }
 
-    const btn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    const loadingBar = document.getElementById('loadingBar');
+    rSwiper.on('slideChange', pauseAllReels);
 
-    btn.disabled = true;
-    btnText.textContent = 'Processing...';
-    loadingBar.classList.add('active');
-
-    setTimeout(() => {
-      btn.disabled = false;
-      btnText.textContent = '🛒 ઓર્ડર કન્ફર્મ કરો';
-      loadingBar.classList.remove('active');
-      document.getElementById('successModal').classList.add('active');
-      document.getElementById('name').value = '';
-      document.getElementById('phone').value = '';
-      document.getElementById('address').value = '';
-    }, 2500);
-  }
-
-  function closeModal() {
-    document.getElementById('successModal').classList.remove('active');
-  }
-
-  // Smooth scroll for anchor links
-  document.querySelectorAll('a[href="#order"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+    // When video ends, auto-swipe to next slide
+    document.querySelectorAll('.reels-swiper .swiper-slide video').forEach(v => {
+      v.addEventListener('ended', () => rSwiper.slideNext());
     });
-  });
-</script>
+
+    // Tap active slide to play / pause (event delegation handles Swiper loop clones)
+    document.querySelector('.reels-swiper').addEventListener('click', e => {
+      const slide = e.target.closest('.reel-slide');
+      if (!slide || !slide.classList.contains('swiper-slide-active')) return;
+      const vid = slide.querySelector('video');
+      if (!vid) return;
+      if (vid.paused) {
+        pauseAllReels();
+        slide.classList.add('is-playing');
+        vid.muted = false;
+        vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+      } else {
+        slide.classList.remove('is-playing');
+        vid.pause();
+      }
+    });
+
+    // FAQ
+    function togFaq(el) { el.parentElement.classList.toggle('open'); }
+
+    // QTY
+    function selQty(b) {
+      document.querySelectorAll('.qty-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    }
+
+    // ORDER - 1 per 24hr
+    function doOrder() {
+      const last = localStorage.getItem('dc_ord');
+      if (last && Date.now() - parseInt(last) < 86400000) {
+        alert('તમે આ 24 કલાકમાં ઓર્ડર કરી ચૂક્યા છો.'); return;
+      }
+      const n = document.getElementById('fname').value.trim();
+      const p = document.getElementById('fphone').value.trim();
+      const a = document.getElementById('faddr').value.trim();
+      if (!n) { document.getElementById('fname').focus(); alert('કૃપા કરી નામ દાખલ કરો'); return; }
+      if (!p || p.length < 10) { document.getElementById('fphone').focus(); alert('10 digit ફોન નંબર દાખલ કરો'); return; }
+      if (!a) { document.getElementById('faddr').focus(); alert('કૃપા કરી સરનામું દાખલ કરો'); return; }
+      const btn = document.getElementById('oBtn');
+      const lbl = document.getElementById('oBtnLbl');
+      const bar = document.getElementById('oLoad');
+      btn.disabled = true; lbl.textContent = 'Processing...'; bar.classList.add('on');
+      setTimeout(() => {
+        btn.disabled = false; lbl.textContent = '🛒 ઓર્ડર કન્ફર્મ કરો'; bar.classList.remove('on');
+        localStorage.setItem('dc_ord', Date.now().toString());
+        document.getElementById('modal').classList.add('on');
+        document.getElementById('fname').value = '';
+        document.getElementById('fphone').value = '';
+        document.getElementById('faddr').value = '';
+      }, 2800);
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('on'); }
+
+    // COUNTDOWN
+    (function () {
+      const K = 'dc_te';
+      let e = localStorage.getItem(K);
+      if (!e || Date.now() > parseInt(e)) { e = Date.now() + 86400000; localStorage.setItem(K, e); }
+      function tick() {
+        const d = parseInt(e) - Date.now();
+        if (d <= 0) { document.getElementById('timerDisplay').textContent = '00:00:00'; return; }
+        const h = String(Math.floor(d / 3600000)).padStart(2, '0');
+        const m = String(Math.floor(d % 3600000 / 60000)).padStart(2, '0');
+        const s = String(Math.floor(d % 60000 / 1000)).padStart(2, '0');
+        document.getElementById('timerDisplay').textContent = h + ':' + m + ':' + s;
+        setTimeout(tick, 1000);
+      }
+      tick();
+    })();
+
+    // SMOOTH SCROLL
+    document.querySelectorAll('a[href="#order"]').forEach(a => {
+      a.addEventListener('click', e => { e.preventDefault(); document.getElementById('order').scrollIntoView({ behavior: 'smooth' }); });
+    });
+  </script>
 </body>
+
 </html>
